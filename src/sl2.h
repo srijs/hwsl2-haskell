@@ -1,3 +1,5 @@
+#pragma once
+
 #include "gf2p127.h"
 
 typedef gf2p127_t sl2_t[2][2];
