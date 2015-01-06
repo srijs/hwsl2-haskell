@@ -23,6 +23,8 @@ TEST multiplication(void) {
   char buf[1024];
   ASSERT_STR_EQ("000000000fff3ffc000000000aaa2aa8",
                 gf2p127_hex(buf, gf2p127_mul(d, e)));
+  ASSERT_STR_EQ("000000000fff3ffc000000000aaa2aa8",
+                gf2p127_hex(buf, gf2p127_mul(e, d)));
   PASS();
 }
 
