@@ -6,18 +6,6 @@
 
 typedef __m128i gf2p127_t;
 
-#ifndef _mm_extract_epi64
-__int64_t _mm_extract_epi64(__m128i a, const int ndx);
-#endif
-
-#ifndef _mm_clmulepi64_si128
-__m128i _mm_clmulepi64_si128(__m128i v1, __m128i v2, const int imm8);
-#endif
-
-#ifndef _mm_alignr_epi8
-__m128i _mm_alignr_epi8(__m128i a, __m128i b, const int ralign);
-#endif
-
 static const inline
 _Bool gf2p127_eq(const gf2p127_t a, const gf2p127_t b) {
   _Bool lo = _mm_extract_epi64(a, 0) == _mm_extract_epi64(b, 0);
