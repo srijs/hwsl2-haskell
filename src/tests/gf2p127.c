@@ -64,6 +64,34 @@ TEST mul01(void) {
   PASS();
 }
 
+TEST mul10(void) {
+  srand(time(NULL));
+  char bufa[1024], bufb[1024], bufc[1024];
+  gf2p127_t a, b, c;
+  int i;
+  for (i = 0; i < 1024 * 1024; i++) {
+    a = gf2p127_rand();
+    b = gf2p127_mul(a, gf2p127_from_int(2));
+    c = gf2p127_mul_10(a);
+    ASSERT_STR_EQm(gf2p127_hex(bufa, a), gf2p127_hex(bufb, b), gf2p127_hex(bufc, c));
+  }
+  PASS();
+}
+
+TEST mul11(void) {
+  srand(time(NULL));
+  char bufa[1024], bufb[1024], bufc[1024];
+  gf2p127_t a, b, c;
+  int i;
+  for (i = 0; i < 1024 * 1024; i++) {
+    a = gf2p127_rand();
+    b = gf2p127_mul(a, gf2p127_from_int(3));
+    c = gf2p127_mul_11(a);
+    ASSERT_STR_EQm(gf2p127_hex(bufa, a), gf2p127_hex(bufb, b), gf2p127_hex(bufc, c));
+  }
+  PASS();
+}
+
 TEST multiplication(void) {
   gf2p127_t a = gf2p127_from_int(0x53);
   gf2p127_t b = gf2p127_from_int(0xCA);
@@ -83,5 +111,7 @@ GREATEST_SUITE(gf2p127) {
   RUN_TEST(addition);
   RUN_TEST(mul00);
   RUN_TEST(mul01);
+  RUN_TEST(mul10);
+  RUN_TEST(mul11);
   RUN_TEST(multiplication);
 }

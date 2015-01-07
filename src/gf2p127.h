@@ -6,6 +6,12 @@
 
 typedef __m128i gf2p127_t;
 
+// The polynomial x^127 + x^63 + 1
+static const uint64_t gf2p127_poly[2] __attribute__ ((aligned (128))) = {
+  0x8000000000000001ULL,
+  0x8000000000000000ULL
+};
+
 static const inline
 _Bool gf2p127_eq(const gf2p127_t a, const gf2p127_t b) {
   _Bool lo = _mm_extract_epi64(a, 0) == _mm_extract_epi64(b, 0);
@@ -32,6 +38,31 @@ static const inline
 gf2p127_t gf2p127_mul_01(const gf2p127_t a) {
   return a;
 }
+
+static const inline
+gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
+  // Shift lower and upper halves left by one bit,
+  // resembling a multiplication by two.
+  gf2p127_t sl = _mm_slli_epi64(a, 1);
+  // Shift lower and upper halves right by 63 bits,
+  // leaving the former upmost bit.
+  gf2p127_t sr = _mm_srli_epi64(a, 63);
+  // Calculate and apply the carry bit to the upper half.
+  gf2p127_t c = _mm_or_si128(sl, _mm_slli_si128(sr, 8));
+  // Check for a x^127 overflow, and add the polynom.
+  uint64_t hi = _mm_extract_epi64(sl, 1);
+  if (hi & 0x8000000000000000ULL) {
+    c = _mm_xor_si128(c, _mm_load_si128((gf2p127_t *)gf2p127_poly));
+  }
+  return c;
+}
+
+static const inline
+gf2p127_t gf2p127_mul_11(const gf2p127_t a) {
+  gf2p127_t mul01 = gf2p127_mul_01(a);
+  gf2p127_t mul10 = gf2p127_mul_10(a);
+  return _mm_xor_si128(mul01, mul10);
+};
 
 static const inline
 gf2p127_t gf2p127_mul(const gf2p127_t a, const gf2p127_t b) {
