@@ -14,8 +14,23 @@ _Bool gf2p127_eq(const gf2p127_t a, const gf2p127_t b) {
 }
 
 static const inline
+gf2p127_t gf2p127_from_int(int a) {
+  return _mm_cvtsi32_si128(a);
+}
+
+static const inline
 gf2p127_t gf2p127_add(const gf2p127_t a, const gf2p127_t b) {
   return _mm_xor_si128(a, b);
+}
+
+static const inline
+gf2p127_t gf2p127_mul_00(const gf2p127_t a) {
+  return _mm_setzero_si128();
+}
+
+static const inline
+gf2p127_t gf2p127_mul_01(const gf2p127_t a) {
+  return a;
 }
 
 static const inline
