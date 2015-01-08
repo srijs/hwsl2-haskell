@@ -6,8 +6,10 @@
 
 typedef __m128i gf2p127_t;
 
-// The polynomial x^127 + x^63 + 1
-static const uint64_t gf2p127_poly[2] __attribute__ ((aligned (128))) = {
+// The polynomials 0 and x^127 + x^63 + 1
+static const uint64_t gf2p127_poly[4] __attribute__ ((aligned (128))) = {
+  0x0000000000000000ULL,
+  0x0000000000000000ULL,
   0x8000000000000001ULL,
   0x8000000000000000ULL
 };
@@ -50,11 +52,9 @@ gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
   // Calculate and apply the carry bit to the upper half.
   gf2p127_t c = _mm_or_si128(sl, _mm_slli_si128(sr, 8));
   // Check for a x^127 overflow, and add the polynom.
-  uint64_t hi = _mm_extract_epi64(sl, 1);
-  if (hi & 0x8000000000000000ULL) {
-    c = _mm_xor_si128(c, _mm_load_si128((gf2p127_t *)gf2p127_poly));
-  }
-  return c;
+  int over = _mm_extract_epi8(sl, 15) >> 7;
+  gf2p127_t poly = _mm_load_si128(((gf2p127_t *)gf2p127_poly) + over);
+  return _mm_xor_si128(c, poly);
 }
 
 static const inline
