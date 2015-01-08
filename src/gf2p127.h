@@ -99,7 +99,7 @@ gf2p127_t gf2p127_mul(const gf2p127_t a, const gf2p127_t b) {
   return lo;
 }
 
-static
+static inline
 char *gf2p127_show(char *buf, const gf2p127_t m) {
   __uint128_t a = (__uint128_t)m;
   unsigned int k;
@@ -121,7 +121,7 @@ char *gf2p127_show(char *buf, const gf2p127_t m) {
   return buf;
 }
 
-static
+static inline
 char *gf2p127_hex(char *str, const gf2p127_t m) {
   sprintf(str, "%.16llx%.16llx", _mm_extract_epi64(m, 1),
                                  _mm_extract_epi64(m, 0));
