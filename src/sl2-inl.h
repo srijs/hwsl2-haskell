@@ -44,12 +44,14 @@ void sl2_mul_bit_right(sl2_t a, int bit, sl2_t c) {
   gf2p127_t a10 = a[1][0];
   gf2p127_t a01 = a[0][1];
   gf2p127_t a11 = a[1][1];
-  gf2p127_t m10a00a01 = gf2p127_add(gf2p127_mul_10(a00), a01);
-  gf2p127_t m10a10a11 = gf2p127_add(gf2p127_mul_10(a10), a11);
-  c[0][0] = m10a00a01;
-  c[1][0] = m10a10a11;
-  c[0][1] = gf2p127_add(a00, gf2p127_mul_bit(m10a00a01, bit));
-  c[1][1] = gf2p127_add(a10, gf2p127_mul_bit(m10a10a11, bit));
+  gf2p127_t m10a00a01[2] = {0};
+  m10a00a01[1] = gf2p127_add(gf2p127_mul_10(a00), a01);
+  gf2p127_t m10a10a11[2] = {0};
+  m10a10a11[1] = gf2p127_add(gf2p127_mul_10(a10), a11);
+  c[0][0] = m10a00a01[1];
+  c[1][0] = m10a10a11[1];
+  c[0][1] = gf2p127_add(a00, m10a00a01[bit]);
+  c[1][1] = gf2p127_add(a10, m10a10a11[bit]);
 }
 
 static inline
