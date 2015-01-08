@@ -3,40 +3,6 @@
 #include "sl2.h"
 
 static inline
-void sl2_mul_a_A(sl2_t a, sl2_t c) {
-  // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
-  gf2p127_t a00 = a[0][0];
-  gf2p127_t a01 = a[0][1];
-  gf2p127_t a10 = a[1][0];
-  gf2p127_t a11 = a[1][1];
-  c[0][0] = gf2p127_add(gf2p127_mul_10(a00),
-                        gf2p127_mul_01(a01));
-  c[0][1] = gf2p127_add(gf2p127_mul_01(a00),
-                        gf2p127_mul_00(a01));
-  c[1][0] = gf2p127_add(gf2p127_mul_10(a10),
-                        gf2p127_mul_01(a11));
-  c[1][1] = gf2p127_add(gf2p127_mul_01(a10),
-                        gf2p127_mul_00(a11));
-};
-
-static inline
-void sl2_mul_a_B(sl2_t a, sl2_t c) {
-  // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
-  gf2p127_t a00 = a[0][0];
-  gf2p127_t a01 = a[0][1];
-  gf2p127_t a10 = a[1][0];
-  gf2p127_t a11 = a[1][1];
-  c[0][0] = gf2p127_add(gf2p127_mul_10(a00),
-                        gf2p127_mul_01(a01));
-  c[0][1] = gf2p127_add(gf2p127_mul_11(a00),
-                        gf2p127_mul_01(a01));
-  c[1][0] = gf2p127_add(gf2p127_mul_10(a10),
-                        gf2p127_mul_01(a11));
-  c[1][1] = gf2p127_add(gf2p127_mul_11(a10),
-                        gf2p127_mul_01(a11));
-};
-
-static inline
 void sl2_mul_A_b(sl2_t b, sl2_t c) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
   gf2p127_t b00 = b[0][0];
@@ -72,11 +38,23 @@ void sl2_mul_B_b(sl2_t b, sl2_t c) {
 
 static inline
 void sl2_mul_bit_right(sl2_t a, int bit, sl2_t c) {
-  if (!bit) {
-    sl2_mul_a_A(a, c);
-  } else {
-    sl2_mul_a_B(a, c);
-  }
+  // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
+  // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
+  gf2p127_t a00 = a[0][0];
+  gf2p127_t a10 = a[1][0];
+  gf2p127_t a01 = a[0][1];
+  gf2p127_t a11 = a[1][1];
+  gf2p127_t m10a00a01 = gf2p127_add(gf2p127_mul_10(a00), a01);
+  gf2p127_t m10a10a11 = gf2p127_add(gf2p127_mul_10(a10), a11);
+  gf2p127_t c01[2], c11[2];
+  c01[0] = a00;
+  c11[0] = a10;
+  c01[1] = gf2p127_add(a00, m10a00a01);
+  c11[1] = gf2p127_add(a10, m10a10a11);
+  c[0][0] = m10a00a01;
+  c[1][0] = m10a10a11;
+  c[0][1] = c01[bit];
+  c[1][1] = c11[bit];
 }
 
 static inline

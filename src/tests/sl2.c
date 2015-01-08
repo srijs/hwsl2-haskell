@@ -49,40 +49,6 @@ TEST multiplication_associativity(void) {
   PASS();
 }
 
-TEST multiplication_special_a_A(void) {
-  sl2_t a, b, c, m[2];
-  char bufa[1024], bufb[1024];
-  int i;
-  sl2_init(m);
-  for (i = 0; i < 1024; i++) {
-    sl2_rand(a);
-    sl2_mul(a, m[0], b);
-    sl2_mul_a_A(a, c);
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[0][0]), gf2p127_hex(bufb, c[0][0]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[0][1]), gf2p127_hex(bufb, c[0][1]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[1][0]), gf2p127_hex(bufb, c[1][0]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[1][1]), gf2p127_hex(bufb, c[1][1]));
-  }
-  PASS();
-}
-
-TEST multiplication_special_a_B(void) {
-  sl2_t a, b, c, m[2];
-  char bufa[1024], bufb[1024];
-  int i;
-  sl2_init(m);
-  for (i = 0; i < 1024; i++) {
-    sl2_rand(a);
-    sl2_mul(a, m[1], b);
-    sl2_mul_a_B(a, c);
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[0][0]), gf2p127_hex(bufb, c[0][0]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[0][1]), gf2p127_hex(bufb, c[0][1]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[1][0]), gf2p127_hex(bufb, c[1][0]));
-    ASSERT_STR_EQ(gf2p127_hex(bufa, b[1][1]), gf2p127_hex(bufb, c[1][1]));
-  }
-  PASS();
-}
-
 TEST multiplication_special_bit_right(void) {
   sl2_t a, b, c, m[2];
   char bufa[1024], bufb[1024];
@@ -125,8 +91,6 @@ TEST multiplication_special_bits_right(void) {
 GREATEST_SUITE(sl2) {
   RUN_TEST(multiplication);
   RUN_TEST(multiplication_associativity);
-  RUN_TEST(multiplication_special_a_A);
-  RUN_TEST(multiplication_special_a_B);
   RUN_TEST(multiplication_special_bit_right);
   RUN_TEST(multiplication_special_bits_right);
 }
