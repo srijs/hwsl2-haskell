@@ -48,16 +48,10 @@ gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
   // Shift lower and upper halves left by one bit,
   // resembling a multiplication by two.
   gf2p127_t sl = _mm_slli_epi64(a, 1);
-  // Shift lower and upper halves right by 63 bits,
-  // leaving the former upmost bit.
-  gf2p127_t sr = _mm_srli_epi64(a, 63);
-  // Calculate and apply the carry bit to the upper half.
-  gf2p127_t c = _mm_or_si128(sl, _mm_slli_si128(sr, 8));
-  // Check for a x^127 overflow, and add the polynom.
-  gf2p127_t over = _mm_srli_epi64(sl, 63);
-  gf2p127_t x127x63 = _mm_slli_epi64(_mm_unpackhi_epi64(over, over), 63);
-  gf2p127_t one = _mm_unpackhi_epi64(over, _mm_setzero_si128());
-  return _mm_xor_si128(_mm_xor_si128(c, x127x63), one);
+  // Check for a x^127 overflow, and add the polynom and carry bit.
+  gf2p127_t one = _mm_srli_epi64(_mm_alignr_epi8(a, sl, 8), 63);
+  gf2p127_t x127x63 = _mm_slli_epi64(_mm_unpacklo_epi64(one, one), 63);
+  return _mm_xor_si128(_mm_xor_si128(sl, one), x127x63);
 }
 
 static const inline
