@@ -4,29 +4,10 @@
 
 #include "greatest.h"
 #include "../gf2p127.h"
+#include "../sl2.h"
+#include "rand.h"
 
 SUITE(gf2p127);
-
-static gf2p127_t gf2p127_rand() {
-  return *(gf2p127_t *)(unsigned char[16]){
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 256,
-    rand() % 128
-  };
-}
 
 TEST addition(void) {
   gf2p127_t a = gf2p127_from_int(0x53);
