@@ -6,19 +6,16 @@
 
 typedef __m128i gf2p127_t;
 
-// The polynomials 0 and x^127 + x^63 + 1
-static const uint64_t gf2p127_poly[4] __attribute__ ((aligned (128))) = {
-  0x0000000000000000ULL,
-  0x0000000000000000ULL,
-  0x8000000000000001ULL,
-  0x8000000000000000ULL
-};
-
 static const inline
 _Bool gf2p127_eq(const gf2p127_t a, const gf2p127_t b) {
   _Bool lo = _mm_extract_epi64(a, 0) == _mm_extract_epi64(b, 0);
   _Bool hi = _mm_extract_epi64(a, 1) == _mm_extract_epi64(b, 1);
   return lo && hi;
+}
+
+static const inline
+gf2p127_t gf2p127_zero() {
+  return _mm_setzero_si128();
 }
 
 static const inline
@@ -57,9 +54,11 @@ gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
   // Calculate and apply the carry bit to the upper half.
   gf2p127_t c = _mm_or_si128(sl, _mm_slli_si128(sr, 8));
   // Check for a x^127 overflow, and add the polynom.
-  int over = _mm_extract_epi8(sl, 15) >> 7;
-  gf2p127_t poly = _mm_load_si128(((gf2p127_t *)gf2p127_poly) + over);
-  return _mm_xor_si128(c, poly);
+  gf2p127_t over = _mm_srli_epi64(sl, 63);
+  gf2p127_t x127 = _mm_slli_epi64(over, 63);
+  gf2p127_t x127x63 = _mm_shuffle_epi32(x127, _MM_SHUFFLE(3, 2, 3, 2));
+  gf2p127_t one = _mm_shuffle_epi32(over, _MM_SHUFFLE(3, 3, 3, 2));
+  return _mm_xor_si128(_mm_xor_si128(c, x127x63), one);
 }
 
 static const inline
