@@ -17,6 +17,20 @@ TEST addition(void) {
   PASS();
 }
 
+TEST mulbit(void) {
+  srand(time(NULL));
+  char bufa[1024], bufb[1024], bufc[1024];
+  gf2p127_t a, b, c;
+  int i;
+  for (i = 0; i < 1024 * 1024; i++) {
+    a = gf2p127_rand();
+    b = gf2p127_mul(a, gf2p127_from_int(i % 2));
+    c = gf2p127_mul_bit(a, i % 2);
+    ASSERT_STR_EQm(gf2p127_hex(bufa, a), gf2p127_hex(bufb, b), gf2p127_hex(bufc, c));
+  }
+  PASS();
+}
+
 TEST mul00(void) {
   srand(time(NULL));
   char bufa[1024], bufb[1024], bufc[1024];
@@ -90,6 +104,7 @@ TEST multiplication(void) {
 
 GREATEST_SUITE(gf2p127) {
   RUN_TEST(addition);
+  RUN_TEST(mulbit);
   RUN_TEST(mul00);
   RUN_TEST(mul01);
   RUN_TEST(mul10);

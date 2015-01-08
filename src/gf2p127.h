@@ -27,6 +27,11 @@ gf2p127_t gf2p127_from_int(int a) {
 }
 
 static const inline
+gf2p127_t gf2p127_mul_bit(const gf2p127_t a, const _Bool bit) {
+  return _mm_slli_epi64(a, !bit * 64);
+}
+
+static const inline
 gf2p127_t gf2p127_add(const gf2p127_t a, const gf2p127_t b) {
   return _mm_xor_si128(a, b);
 }
