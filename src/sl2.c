@@ -1,5 +1,19 @@
 #include "sl2-inl.h"
 
+void sl2_mul_bit_buf_left(sl2_t b, unsigned char *buf, size_t n) {
+  size_t i;
+  for (i = n; i > 0; i--) {
+    sl2_mul_bits_left(b, buf[i - 1]);
+  }
+}
+
+void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n, sl2_t m[256]) {
+  size_t i;
+  for (i = n; i > 0; i--) {
+    sl2_mul_byte_left(b, buf[i - 1], m);
+  }
+}
+
 void sl2_mul_bit_buf_right(sl2_t a, unsigned char *buf, size_t n) {
   size_t i;
   for (i = 0; i < n; i++) {

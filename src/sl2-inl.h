@@ -3,38 +3,36 @@
 #include "sl2.h"
 
 static inline
-void sl2_mul_A_b(sl2_t b, sl2_t c) {
+void sl2_mul_bit_left(sl2_t b, int bit, sl2_t c) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
-  gf2p127_t b00 = b[0][0];
-  gf2p127_t b01 = b[0][1];
-  gf2p127_t b10 = b[1][0];
-  gf2p127_t b11 = b[1][1];
-  c[0][0] = gf2p127_add(gf2p127_mul_10(b00),
-                        gf2p127_mul_01(b10));
-  c[0][1] = gf2p127_add(gf2p127_mul_10(b01),
-                        gf2p127_mul_01(b11));
-  c[1][0] = gf2p127_add(gf2p127_mul_01(b00),
-                        gf2p127_mul_00(b10));
-  c[1][1] = gf2p127_add(gf2p127_mul_01(b01),
-                        gf2p127_mul_00(b11));
-};
-
-static inline
-void sl2_mul_B_b(sl2_t b, sl2_t c) {
   // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
   gf2p127_t b00 = b[0][0];
-  gf2p127_t b01 = b[0][1];
   gf2p127_t b10 = b[1][0];
+  gf2p127_t b01 = b[0][1];
   gf2p127_t b11 = b[1][1];
-  c[0][0] = gf2p127_add(gf2p127_mul_10(b00),
-                        gf2p127_mul_11(b10));
-  c[0][1] = gf2p127_add(gf2p127_mul_10(b01),
-                        gf2p127_mul_11(b11));
-  c[1][0] = gf2p127_add(gf2p127_mul_01(b00),
-                        gf2p127_mul_01(b10));
-  c[1][1] = gf2p127_add(gf2p127_mul_01(b01),
-                        gf2p127_mul_01(b11));
-};
+  c[0][0] = gf2p127_zero();
+  c[0][1] = gf2p127_zero();
+  c[1][0] = b10;
+  c[1][1] = b11;
+  gf2p127_t m0 = gf2p127_add(gf2p127_mul_10(b00), gf2p127_mul_10(c[bit][0]));
+  gf2p127_t m1 = gf2p127_add(gf2p127_mul_10(b01), gf2p127_mul_10(c[bit][1]));
+  c[1][0] = gf2p127_add(c[bit][0], b00);
+  c[1][1] = gf2p127_add(c[bit][1], b01);
+  c[0][0] = gf2p127_add(b10, m0);
+  c[0][1] = gf2p127_add(b11, m1);
+}
+
+static inline
+void sl2_mul_bits_left(sl2_t b, unsigned char byte) {
+  sl2_mul_bit_left(b, (byte >> 0) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 1) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 2) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 3) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 4) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 5) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 6) & 1, b);
+  sl2_mul_bit_left(b, (byte >> 7) & 1, b);
+}
 
 static inline
 void sl2_mul_bit_right(sl2_t a, int bit, sl2_t c) {
@@ -83,6 +81,11 @@ void sl2_mul(sl2_t a, sl2_t b, sl2_t c) {
   c[1][0] = gf2p127_add(m1, m3);
   c[1][1] = gf2p127_add(gf2p127_add(m0, m1), gf2p127_add(m2, m5));
 };
+
+static inline
+void sl2_mul_byte_left(sl2_t b, unsigned char byte, sl2_t m[256]) {
+  sl2_mul(m[byte], b, b);
+}
 
 static inline
 void sl2_mul_byte_right(sl2_t a, unsigned char byte, sl2_t m[256]) {
