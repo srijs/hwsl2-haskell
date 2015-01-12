@@ -21,11 +21,9 @@ $(TARGET): $(OBJECTS)
 
 test: $(OBJECTS) $(TESTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(TESTS) -o test
-	./test
 
 bench: $(OBJECTS) $(TESTS)
 	$(CC) $(CFLAGS) $(OBJECTS) $(BENCHMARKS) -o benchmark
-	./benchmark
 
 clean:
 	-rm -f *.o
