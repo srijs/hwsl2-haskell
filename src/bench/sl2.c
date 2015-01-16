@@ -5,8 +5,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "../sl2-inl.h"
+#include "../tillich-zemor.h"
 
 static long long ustime(void) {
   struct timeval tv;
@@ -24,23 +25,23 @@ int main(void) {
   read(fd, buf, size);
   unsigned char str[1024];
   long long start, end;
-  sl2_t a, mbyte[256];
-  printf("Benchmarking left multiplication...\n");
+  tz_hash_t a;
+  printf("Benchmarking prepend...\n");
   start = ustime();
-  sl2_unit(a);
-  sl2_mul_buf_left(a, buf, size);
+  tz_hash_unit(a);
+  tz_hash_prepend(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
   memset(str, 0, 1024);
-  sl2_serialize(a, str);
+  tz_hash_serialize(a, str);
   printf("Result: %s\n", str);
-  printf("Benchmarking per-bit right multiplication...\n");
+  printf("Benchmarking append...\n");
   start = ustime();
-  sl2_unit(a);
-  sl2_mul_buf_right(a, buf, size);
+  tz_hash_unit(a);
+  tz_hash_append(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
   memset(str, 0, 1024);
-  sl2_serialize(a, str);
+  tz_hash_serialize(a, str);
   printf("Result: %s\n", str);
 }

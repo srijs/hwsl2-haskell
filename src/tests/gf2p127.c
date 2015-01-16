@@ -3,8 +3,7 @@
 #include <time.h>
 
 #include "greatest.h"
-#include "../gf2p127.h"
-#include "../sl2.h"
+#include "../sl2-inl.h"
 #include "rand.h"
 
 SUITE(gf2p127);

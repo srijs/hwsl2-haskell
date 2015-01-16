@@ -91,7 +91,7 @@ TEST serialize(void) {
   for (i = 0; i < 1024; i++) {
     sl2_rand(a);
     sl2_serialize(a, bufa);
-    sl2_deserialize(b, bufa);
+    sl2_unserialize(b, bufa);
     ASSERT_STR_EQ(gf2p127_hex(bufb, a[0][0]), gf2p127_hex(bufc, b[0][0]));
     ASSERT_STR_EQ(gf2p127_hex(bufb, a[0][1]), gf2p127_hex(bufc, b[0][1]));
     ASSERT_STR_EQ(gf2p127_hex(bufb, a[1][0]), gf2p127_hex(bufc, b[1][0]));
