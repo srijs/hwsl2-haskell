@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "../sl2-inl.h"
 
@@ -21,49 +22,25 @@ int main(void) {
   unsigned char *buf = malloc(size);
   int fd = open("/dev/urandom", O_RDONLY);
   read(fd, buf, size);
-  char str[1024];
+  unsigned char str[1024];
   long long start, end;
   sl2_t a, mbyte[256];
-  printf("Benchmarking per-byte left multiplication...\n");
+  printf("Benchmarking left multiplication...\n");
   start = ustime();
-  sl2_init_256(mbyte);
-  a[0][0] = mbyte[buf[size - 1]][0][0];
-  a[0][1] = mbyte[buf[size - 1]][0][1];
-  a[1][0] = mbyte[buf[size - 1]][1][0];
-  a[1][1] = mbyte[buf[size - 1]][1][1];
-  sl2_mul_buf_left(a, buf, size - 1, mbyte);
+  sl2_unit(a);
+  sl2_mul_buf_left(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
-  printf("Result: %s\n", sl2_hex(str, a));
-  printf("Benchmarking per-bit left multiplication...\n");
-  start = ustime();
-  a[0][0] = mbyte[buf[size - 1]][0][0];
-  a[0][1] = mbyte[buf[size - 1]][0][1];
-  a[1][0] = mbyte[buf[size - 1]][1][0];
-  a[1][1] = mbyte[buf[size - 1]][1][1];
-  sl2_mul_bit_buf_left(a, buf, size - 1);
-  end = ustime();
-  printf("Took %lli nanoseconds.\n", end - start);
-  printf("Result: %s\n", sl2_hex(str, a));
-  printf("Benchmarking per-byte right multiplication...\n");
-  start = ustime();
-  sl2_init_256(mbyte);
-  a[0][0] = mbyte[buf[0]][0][0];
-  a[0][1] = mbyte[buf[0]][0][1];
-  a[1][0] = mbyte[buf[0]][1][0];
-  a[1][1] = mbyte[buf[0]][1][1];
-  sl2_mul_buf_right(a, buf + 1, size - 1, mbyte);
-  end = ustime();
-  printf("Took %lli nanoseconds.\n", end - start);
-  printf("Result: %s\n", sl2_hex(str, a));
+  memset(str, 0, 1024);
+  sl2_serialize(a, str);
+  printf("Result: %s\n", str);
   printf("Benchmarking per-bit right multiplication...\n");
   start = ustime();
-  a[0][0] = mbyte[buf[0]][0][0];
-  a[0][1] = mbyte[buf[0]][0][1];
-  a[1][0] = mbyte[buf[0]][1][0];
-  a[1][1] = mbyte[buf[0]][1][1];
-  sl2_mul_bit_buf_right(a, buf + 1, size - 1);
+  sl2_unit(a);
+  sl2_mul_buf_right(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
-  printf("Result: %s\n", sl2_hex(str, a));
+  memset(str, 0, 1024);
+  sl2_serialize(a, str);
+  printf("Result: %s\n", str);
 }
