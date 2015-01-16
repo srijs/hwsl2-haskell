@@ -7,33 +7,15 @@ void tz_hash_unit(tz_hash_t h) {
 
 void tz_hash_append(tz_hash_t h, unsigned char *buf, size_t n) {
   size_t i;
-  unsigned char byte;
   for (i = 0; i < n; i++) {
-    byte = buf[i];
-    sl2_mul_bit_right(h, (byte >> 7) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 6) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 5) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 4) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 3) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 2) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 1) & 1, h);
-    sl2_mul_bit_right(h, (byte >> 0) & 1, h);
+    sl2_mul_bits_right(h, buf[i]);
   }
 }
 
 void tz_hash_prepend(tz_hash_t h, unsigned char *buf, size_t n) {
   size_t i;
-  unsigned char byte;
   for (i = n; i > 0; i--) {
-    byte = buf[i - 1];
-    sl2_mul_bit_left(h, (byte >> 0) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 1) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 2) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 3) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 4) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 5) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 6) & 1, h);
-    sl2_mul_bit_left(h, (byte >> 7) & 1, h);
+    sl2_mul_bits_left(h, buf[i - 1]);
   }
 }
 
