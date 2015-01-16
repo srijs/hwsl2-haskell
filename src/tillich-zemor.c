@@ -23,10 +23,10 @@ void tz_hash_concat(tz_hash_t a, tz_hash_t b, tz_hash_t c) {
   sl2_mul(a, b, c);
 }
 
-void tz_hash_serialize(tz_hash_t h, unsigned char buf[83]) {
+void tz_hash_serialize(tz_hash_t h, unsigned char buf[86]) {
   sl2_serialize(h, buf);
 }
 
-void tz_hash_unserialize(tz_hash_t h, unsigned char buf[83]) {
+void tz_hash_unserialize(tz_hash_t h, unsigned char buf[86]) {
   sl2_unserialize(h, buf);
 }
