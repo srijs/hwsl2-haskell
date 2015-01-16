@@ -81,16 +81,6 @@ void sl2_mul(sl2_t a, sl2_t b, sl2_t c) {
 }
 
 static inline
-void sl2_mul_byte_left(sl2_t b, unsigned char byte, sl2_t m[256]) {
-  sl2_mul(m[byte], b, b);
-}
-
-static inline
-void sl2_mul_byte_right(sl2_t a, unsigned char byte, sl2_t m[256]) {
-  sl2_mul(a, m[byte], a);
-}
-
-static inline
 void sl2_init(sl2_t m[2]) {
   m[0][0][0] = gf2p127_from_int(2);
   m[0][0][1] = gf2p127_from_int(1);
