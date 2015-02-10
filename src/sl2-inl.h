@@ -16,8 +16,8 @@ void sl2_mul_bit_left(sl2_t b, int bit) {
   b[0][1] = gf2p127_zero();
   b[1][0] = gf2p127_add(b00, b[bit][0]);
   b[1][1] = gf2p127_add(b01, b[bit][1]);
-  b[0][0] = gf2p127_add(b10, gf2p127_mul_10(b[1][0]));
-  b[0][1] = gf2p127_add(b11, gf2p127_mul_10(b[1][1]));
+  b[0][0] = gf2p127_add(b10, gf2p127_mul_10_left(b[1][0]));
+  b[0][1] = gf2p127_add(b11, gf2p127_mul_10_left(b[1][1]));
 }
 
 static inline
