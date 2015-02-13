@@ -25,7 +25,7 @@ int main(void) {
   read(fd, buf, size);
   unsigned char str[1024];
   long long start, end;
-  tz_hash_t a;
+  tz_hash_t a = tz_hash_new();
   printf("Benchmarking prepend...\n");
   start = ustime();
   tz_hash_unit(a);

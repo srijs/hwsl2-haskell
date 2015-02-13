@@ -5,6 +5,22 @@
 typedef gf2p127_t sl2_t[2][2];
 
 static inline
+_Bool sl2_eq(sl2_t a, sl2_t b) {
+  return gf2p127_eq(a[0][0], b[0][0]) &&
+         gf2p127_eq(a[0][1], b[0][1]) &&
+         gf2p127_eq(a[1][0], b[1][0]) &&
+         gf2p127_eq(a[1][1], b[1][1]);
+}
+
+static inline
+void sl2_copy(sl2_t dst, sl2_t src) {
+  dst[0][0] = src[0][0];
+  dst[0][1] = src[0][1];
+  dst[1][0] = src[1][0];
+  dst[1][1] = src[1][1];
+}
+
+static inline
 void sl2_mul_bit_left(sl2_t b, int bit) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
   // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
@@ -78,6 +94,16 @@ void sl2_mul(sl2_t a, sl2_t b, sl2_t c) {
   c[0][1] = gf2p127_add(m2, m4);
   c[1][0] = gf2p127_add(m1, m3);
   c[1][1] = gf2p127_add(gf2p127_add(m0, m1), gf2p127_add(m2, m5));
+}
+
+static inline
+void sl2_mul_byte_left(sl2_t b, unsigned char byte, sl2_t m[256]) {
+  sl2_mul(m[byte], b, b);
+}
+
+static inline
+void sl2_mul_byte_right(sl2_t a, unsigned char byte, sl2_t m[256]) {
+  sl2_mul(a, m[byte], a);
 }
 
 static inline
