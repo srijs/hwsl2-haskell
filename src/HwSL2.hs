@@ -21,9 +21,6 @@ import Data.Functor
 
 newtype Hash = Hash (ForeignPtr ())
 
-tzHashSize = 64
-tzHashLen = 86
-
 foreign import ccall "tillich-zemor.h tz_hash_eq"
   tzHashEq :: Ptr () -> Ptr () -> IO CInt
 
@@ -45,6 +42,9 @@ foreign import ccall "tillich-zemor.h tz_hash_serialize"
 foreign import ccall "tillich-zemor.h tz_hash_unserialize"
   tzHashUnserialize :: Ptr () -> Ptr CChar -> IO ()
 
+tzHashSize = 64
+tzHashLen = 86
+
 withHashPtr :: Hash -> (Ptr () -> IO a) -> IO a
 withHashPtr (Hash fp) = withForeignPtr fp
 
@@ -55,7 +55,7 @@ withHashPtrCopy :: Hash -> (Ptr () -> IO a) -> IO (Hash, a)
 withHashPtrCopy h f = withHashPtr h $ \hp -> withHashPtrNew $ \hp' -> copyBytes hp' hp tzHashSize >> f hp'
 
 instance Show Hash where
-  show h = unsafePerformIO $ withHashPtr h $ \hp -> mallocForeignPtrArray tzHashLen >>= flip withForeignPtr (\p -> tzHashSerialize hp p >> peekCStringLen (p, tzHashLen))
+  show h = unsafePerformIO $ allocaBytes tzHashLen $ \p -> withHashPtr h (flip tzHashSerialize p) >> peekCStringLen (p, tzHashLen)
 
 instance Eq Hash where
   a == b = toBool $ unsafePerformIO $ withHashPtr a $ \ap -> withHashPtr b (tzHashEq ap)
