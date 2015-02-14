@@ -13,7 +13,7 @@ name:                hwsl2
 version:             0.1.0.0
 
 -- A short (one-line) description of the package.
-synopsis:            An algebraic hash function over the special linear group of degree 2
+synopsis:            Hashing with SL2
 
 -- A longer description of the package.
 -- description:         
