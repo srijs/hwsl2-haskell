@@ -10,7 +10,7 @@ name:                hwsl2
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.1.1.2
+version:             0.1.1.3
 
 -- A short (one-line) description of the package.
 synopsis:            Hashing with SL2
@@ -78,8 +78,10 @@ library
   hs-source-dirs:      src
 
   -- Options for foreign source files.
+  include-dirs:        src
   c-sources:           src/tillich-zemor.c
   includes:            src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
+  install-includes:    src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
   cc-options:          -msse2 -msse4.1 -mpclmul
   
   -- Base language which the package is written in.
