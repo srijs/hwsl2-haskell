@@ -121,7 +121,7 @@ infixr 7 +>
 (+>) :: ByteString -> Hash -> Hash
 (+>) s h = fst $ unsafePerformIO $ withHashPtrCopy h $ prepend s
 
--- | /O(n)/ Append the hash of the every 'ByteString' to the existing 'Hash', from left to right.
+-- | /O(n)/ Append the hash of every 'ByteString' to the existing 'Hash', from left to right.
 -- A significantly faster equivalent of @('foldl' ('<+'))@.
 infixl 7 <|
 (<|) :: Foldable t => Hash -> t ByteString -> Hash
