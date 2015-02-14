@@ -66,7 +66,7 @@ library
   exposed-modules:     Data.Hash.SL2
   
   -- Modules included in this library but not exported.
-  -- other-modules:       
+  other-modules:       Data.Hash.SL2.Internal
   
   -- LANGUAGE extensions used by modules in this package.
   other-extensions:    ForeignFunctionInterface, EmptyDataDecls
@@ -86,4 +86,21 @@ library
   
   -- Base language which the package is written in.
   default-language:    Haskell2010
-  
+
+
+test-suite test
+  type:                detailed-0.9
+  hs-source-dirs:      src
+  test-module:         Data.Hash.SL2.Test
+  other-modules:       Data.Hash.SL2.Internal
+  build-depends:       base >=4.7 && <4.8,
+                       Cabal >=1.9.2,
+                       bytestring >=0.10 && <0.11,
+                       QuickCheck >=2.7 && <2.8,
+                       quickcheck-properties>=0.1 && <0.2,
+                       cabal-test-quickcheck>=0.1 && <0.2
+  include-dirs:        src
+  c-sources:           src/tillich-zemor.c
+  includes:            src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
+  install-includes:    src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
+  cc-options:          -msse2 -msse4.1 -mpclmul

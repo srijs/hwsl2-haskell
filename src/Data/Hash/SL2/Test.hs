@@ -1,0 +1,62 @@
+module Data.Hash.SL2.Test where
+
+import Data.Word
+import Data.Hash.SL2.Internal
+import qualified Data.ByteString as B
+
+import Foreign.ForeignPtr
+import Foreign.Storable
+
+import Test.QuickCheck
+import Test.QuickCheck.All
+import Test.QuickCheck.Property.Monoid
+
+import Distribution.TestSuite.QuickCheck
+
+import Data.Monoid
+
+instance Arbitrary B.ByteString where
+  arbitrary = fmap B.pack arbitrary
+
+instance Arbitrary Hash where
+  arbitrary = fmap fromBytes $ mapM choose (take 64 $ cycle $ replicate 15 (0, 255) ++ [(0, 127)])
+
+tests :: IO [Test]
+tests = return
+
+  [ testProperty "Monoid" $
+      eq $ prop_Monoid (T :: T Hash)
+
+  , testGroup "append"
+
+    [ testGroup "single string" $
+
+      [ testProperty "equal to ((. hash) . (<>))" $
+          \a b -> ((. hash) . (<>)) a b == a <+ b
+      ]
+
+    , testGroup "multiple strings" $
+
+      [ testProperty "equal to (foldl (<+))" $
+          \a b -> (foldl (<+)) a b == a <| b
+      ]
+
+    ]
+
+  , testGroup "prepend"
+
+    [ testGroup "single string" $
+
+      [ testProperty "equal to ((<>) . hash)" $
+          \a b -> ((<>) . hash) a b == a +> b
+      ]
+
+    , testGroup "multiple strings" $
+
+      [ testProperty "equal to (flip (foldr (+>)))" $
+          \a b -> (flip (foldr (+>))) a b == a |> b
+      ]
+
+    ]
+
+  ]
