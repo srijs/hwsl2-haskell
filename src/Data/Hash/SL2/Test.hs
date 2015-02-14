@@ -24,8 +24,15 @@ instance Arbitrary Hash where
 tests :: IO [Test]
 tests = return
 
-  [ testProperty "Monoid" $
-      eq $ prop_Monoid (T :: T Hash)
+  [ testGroup "composition"
+
+    [ testProperty "forms a monoid" $
+        eq $ prop_Monoid (T :: T Hash)
+
+    , testProperty "is distributive" $
+        \a b -> hash (a <> b) == hash a <> hash b
+
+    ]
 
   , testGroup "append"
 
