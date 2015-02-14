@@ -77,7 +77,7 @@ void sl2_mul_bits_right(sl2_t a, unsigned char byte) {
 }
 
 static inline
-void sl2_mul(sl2_t a, sl2_t b, sl2_t c) {
+void sl2_mul(sl2_t c, sl2_t a, sl2_t b) {
   // Strassen algorithm
   gf2p127_t m0, m1, m2, m3, m4, m5, m6;
   m0 = gf2p127_mul(gf2p127_add(a[0][0], a[1][1]),

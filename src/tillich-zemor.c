@@ -31,8 +31,8 @@ void tz_hash_prepend(tz_hash_t h, unsigned char *buf, size_t n) {
   }
 }
 
-void tz_hash_concat(tz_hash_t a, tz_hash_t b, tz_hash_t c) {
-  sl2_mul(a->sl2, b->sl2, c->sl2);
+void tz_hash_concat(tz_hash_t c, tz_hash_t a, tz_hash_t b) {
+  sl2_mul(c->sl2, a->sl2, b->sl2);
 }
 
 void tz_hash_serialize(tz_hash_t h, unsigned char buf[86]) {
