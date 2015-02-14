@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 #include <smmintrin.h>
 #include <wmmintrin.h>
 
