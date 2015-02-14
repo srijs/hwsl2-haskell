@@ -78,7 +78,7 @@ library
   hs-source-dirs:      src
 
   -- Options for foreign source files.
-  c-sources:           src/tillich-zemor.c
+  c-sources:           src/tillich-zemor.c src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
   cc-options:          -msse2 -msse4.1 -mpclmul
   
   -- Base language which the package is written in.
