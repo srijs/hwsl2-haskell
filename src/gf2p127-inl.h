@@ -53,7 +53,7 @@ gf2p127_t gf2p127_mul_10_left(const gf2p127_t a) {
   gf2p127_t sl = _mm_slli_epi64(a, 1);
   // Check for a x^127 overflow, and add the polynom and carry bit.
   gf2p127_t one = _mm_srli_epi64(_mm_alignr_epi8(a, sl, 8), 63);
-  gf2p127_t over = _mm_and_si128(sl, _mm_loadu_si128(x127));
+  gf2p127_t over = _mm_and_si128(sl, _mm_loadu_si128((const gf2p127_t *)x127));
   gf2p127_t x127x63 = _mm_unpackhi_epi64(over, over);
   return _mm_xor_si128(_mm_xor_si128(sl, one), x127x63);
 }
