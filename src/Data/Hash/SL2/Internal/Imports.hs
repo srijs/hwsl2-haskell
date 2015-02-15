@@ -5,7 +5,7 @@ module Data.Hash.SL2.Internal.Imports where
 import Foreign.Ptr
 import Foreign.C.Types
 
-import Data.Hash.SL2.Internal.Hash
+import Data.Hash.SL2.Internal
 
 foreign import ccall "tillich-zemor.h tz_hash_eq"
   eq :: Ptr Hash -> Ptr Hash -> IO CInt

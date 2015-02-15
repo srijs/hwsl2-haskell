@@ -2,7 +2,7 @@ module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2) where
 
 import Foreign
 
-import Data.Hash.SL2.Internal.Hash
+import Data.Hash.SL2.Internal
 
 unsafeUseAsPtr :: Hash -> (Ptr Hash -> IO a) -> IO a
 unsafeUseAsPtr (H fp) f = withForeignPtr fp (f . castPtr)

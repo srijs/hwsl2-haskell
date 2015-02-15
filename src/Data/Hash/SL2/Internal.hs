@@ -1,25 +1,16 @@
-module Data.Hash.SL2.Internal
-  ( module Data.Hash.SL2.Internal
-  , module Data.Hash.SL2.Internal.Hash
-  ) where
+module Data.Hash.SL2.Internal where
 
 import Foreign
 import System.IO.Unsafe
 
-import Data.Hash.SL2.Internal.Hash
-import Data.Hash.SL2.Unsafe
+newtype Hash = H (ForeignPtr ())
 
-import Data.Functor
-
-withHashPtrNew :: (Ptr Hash -> IO a) -> IO (Hash, a)
-withHashPtrNew f = mallocForeignPtrBytes tzHashSize >>= \fp -> (\r -> (H fp, r)) <$> withForeignPtr fp (f . castPtr)
-
-withHashPtrCopy :: Hash -> (Ptr Hash -> IO a) -> IO (Hash, a)
-withHashPtrCopy h f = unsafeUseAsPtr h $ \hp -> withHashPtrNew $ \hp' -> copyBytes hp' hp tzHashSize >> f hp'
+hashSize = 64 :: Int
+hashLen = 86 :: Int
 
 fromBytes :: [Word8] -> Hash
 fromBytes ws = H $ unsafePerformIO $ do
-  fp <- mallocForeignPtrArray0 tzHashSize
+  fp <- mallocForeignPtrArray0 hashSize
   withForeignPtr fp $ \p ->
-    mapM_ (\(w, off) -> pokeElemOff p off w) (zip ws [0..tzHashSize-1])
+    mapM_ (\(w, off) -> pokeElemOff p off w) (zip ws [0..hashSize-1])
   return (castForeignPtr fp)
