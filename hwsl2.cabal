@@ -64,9 +64,12 @@ cabal-version:       >=1.10
 library
   -- Modules exported by the library.
   exposed-modules:     Data.Hash.SL2
+                       Data.Hash.SL2.Mutable
+                       Data.Hash.SL2.Unsafe
   
   -- Modules included in this library but not exported.
   other-modules:       Data.Hash.SL2.Internal
+                       Data.Hash.SL2.Internal.Hash
                        Data.Hash.SL2.Internal.Imports
   
   -- LANGUAGE extensions used by modules in this package.
@@ -96,7 +99,11 @@ test-suite test
   hs-source-dirs:      src
   test-module:         Data.Hash.SL2.Test
   other-modules:       Data.Hash.SL2
+                       Data.Hash.SL2.Mutable
+                       Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
+                       Data.Hash.SL2.Internal.Hash
+                       Data.Hash.SL2.Internal.Imports
   build-depends:       base >=4.7 && <4.8,
                        Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,
