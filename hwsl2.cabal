@@ -67,15 +67,18 @@ library
   
   -- Modules included in this library but not exported.
   other-modules:       Data.Hash.SL2.Internal
+                       Data.Hash.SL2.Internal.Imports
   
   -- LANGUAGE extensions used by modules in this package.
-  other-extensions:    ForeignFunctionInterface, EmptyDataDecls
+  other-extensions:    ForeignFunctionInterface
   
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.7 && <4.8, bytestring >=0.10 && <0.11
   
   -- Directories containing source files.
   hs-source-dirs:      src
+
+  ghc-options:         -fwarn-unused-imports
 
   -- Options for foreign source files.
   include-dirs:        src
@@ -92,7 +95,8 @@ test-suite test
   type:                detailed-0.9
   hs-source-dirs:      src
   test-module:         Data.Hash.SL2.Test
-  other-modules:       Data.Hash.SL2.Internal
+  other-modules:       Data.Hash.SL2
+                       Data.Hash.SL2.Internal
   build-depends:       base >=4.7 && <4.8,
                        Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,

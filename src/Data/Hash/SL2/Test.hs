@@ -1,7 +1,10 @@
 module Data.Hash.SL2.Test where
 
 import Data.Word
+
+import Data.Hash.SL2
 import Data.Hash.SL2.Internal
+
 import qualified Data.ByteString as B
 
 import Foreign.ForeignPtr
