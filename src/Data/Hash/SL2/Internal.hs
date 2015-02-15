@@ -20,75 +20,71 @@ import Data.Monoid
 import Data.Functor
 import Data.Foldable (Foldable, foldlM, foldrM)
 
--- Datatypes
-
-data Gf2p127 = Gf2p127
-  !Word8 !Word8 !Word8 !Word8
-  !Word8 !Word8 !Word8 !Word8
-  !Word8 !Word8 !Word8 !Word8
-  !Word8 !Word8 !Word8 !Word8
-
-data SL2 = SL2 !Gf2p127 !Gf2p127 !Gf2p127 !Gf2p127
-
 -- Foreign Imports
 
 foreign import ccall "tillich-zemor.h tz_hash_eq"
-  tzHashEq :: Ptr SL2 -> Ptr SL2 -> IO CInt
+  tzHashEq :: Ptr () -> Ptr () -> IO CInt
 
 foreign import ccall "tillich-zemor.h tz_hash_unit"
-  tzHashUnit :: Ptr SL2 -> IO ()
+  tzHashUnit :: Ptr () -> IO ()
 
 foreign import ccall "tillich-zemor.h tz_hash_append"
-  tzHashAppend :: Ptr SL2 -> Ptr CChar -> CSize -> IO ()
+  tzHashAppend :: Ptr () -> Ptr CChar -> CSize -> IO ()
 
 foreign import ccall "tillich-zemor.h tz_hash_prepend"
-  tzHashPrepend :: Ptr SL2 -> Ptr CChar -> CSize -> IO ()
+  tzHashPrepend :: Ptr () -> Ptr CChar -> CSize -> IO ()
 
 foreign import ccall "tillich-zemor.h tz_hash_concat"
-  tzHashConcat :: Ptr SL2 -> Ptr SL2 -> Ptr SL2 -> IO ()
+  tzHashConcat :: Ptr () -> Ptr () -> Ptr () -> IO ()
 
 foreign import ccall "tillich-zemor.h tz_hash_serialize"
-  tzHashSerialize :: Ptr SL2 -> Ptr CChar -> IO ()
+  tzHashSerialize :: Ptr () -> Ptr CChar -> IO ()
 
 foreign import ccall "tillich-zemor.h tz_hash_unserialize"
-  tzHashUnserialize :: Ptr SL2 -> Ptr CChar -> IO ()
+  tzHashUnserialize :: Ptr () -> Ptr CChar -> IO ()
 
 -- Mutable Helpers
 
-append :: ByteString -> Ptr SL2 -> IO ()
+append :: ByteString -> Ptr () -> IO ()
 append s p = unsafeUseAsCStringLen s $ \(s', len) -> tzHashAppend p s' (fromIntegral len)
 
-prepend :: ByteString -> Ptr SL2 -> IO ()
+prepend :: ByteString -> Ptr () -> IO ()
 prepend s p = unsafeUseAsCStringLen s $ \(s', len) -> tzHashPrepend p s' (fromIntegral len)
 
 -- | Opaque representation of a 512 bit hash.
-newtype Hash = H (ForeignPtr SL2)
+newtype Hash = H (ForeignPtr ())
 
 -- Foreign Pointer Helpers
 
 tzHashSize = 64
 tzHashLen = 86
 
-withHashPtr :: Hash -> (Ptr SL2 -> IO a) -> IO a
+withHashPtr :: Hash -> (Ptr () -> IO a) -> IO a
 withHashPtr (H fp) = withForeignPtr fp
 
-withHashPtr2 :: Hash -> Hash -> (Ptr SL2 -> Ptr SL2 -> IO a) -> IO a
+withHashPtr2 :: Hash -> Hash -> (Ptr () -> Ptr () -> IO a) -> IO a
 withHashPtr2 a b f = withHashPtr a (withHashPtr b . f)
 
-withHashPtrNew :: (Ptr SL2 -> IO a) -> IO (Hash, a)
+withHashPtrNew :: (Ptr () -> IO a) -> IO (Hash, a)
 withHashPtrNew f = mallocForeignPtrBytes tzHashSize >>= \fp -> (\r -> (H fp, r)) <$> withForeignPtr fp f
 
-withHashPtrCopy :: Hash -> (Ptr SL2 -> IO a) -> IO (Hash, a)
+withHashPtrCopy :: Hash -> (Ptr () -> IO a) -> IO (Hash, a)
 withHashPtrCopy h f = withHashPtr h $ \hp -> withHashPtrNew $ \hp' -> copyBytes hp' hp tzHashSize >> f hp'
 
 fromBytes :: [Word8] -> Hash
 fromBytes ws = H $ unsafePerformIO $ do
-  fp <- mallocForeignPtrArray0 64
+  fp <- mallocForeignPtrArray0 tzHashSize
   withForeignPtr fp $ \p ->
-    mapM_ (\(w, off) -> pokeElemOff p off w) (zip ws [0..63])
+    mapM_ (\(w, off) -> pokeElemOff p off w) (zip ws [0..tzHashSize-1])
   return (castForeignPtr fp)
 
 -- Instances
+
+instance Storable Hash where
+  sizeOf = const tzHashSize
+  alignment = const 0
+  peek p = fmap fst $ withHashPtrNew $ \hp -> copyBytes hp (castPtr p) tzHashSize
+  poke p h = withHashPtr h $ \hp -> copyBytes (castPtr p) hp tzHashSize
 
 instance Show Hash where
   show h = unsafePerformIO $ allocaBytes tzHashLen $ \p -> withHashPtr h (flip tzHashSerialize p) >> peekCStringLen (p, tzHashLen)
