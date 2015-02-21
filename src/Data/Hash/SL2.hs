@@ -47,8 +47,10 @@ instance Eq Hash where
 instance Monoid Hash where
   mempty = fst $ unsafePerformIO $ unsafeWithNew Mutable.unit
   mappend a b = fst $ unsafePerformIO $ unsafeWithNew (unsafeUseAsPtr2 a b . Mutable.concat)
-  mconcat hs = fst $ unsafePerformIO $ Mutable.withUnit $ \up ->
-    mapM_ (flip unsafeUseAsPtr $ Mutable.concat up up) hs
+  mconcat [] = mempty
+  mconcat [h] = h
+  mconcat (h:hs) = fst $ unsafePerformIO $ Mutable.withCopy h $ \p ->
+    mapM_ (flip unsafeUseAsPtr $ Mutable.concat p p) hs
 
 -- | /O(n)/ Calculate the hash of the 'ByteString'. Alias for @('mempty' '<+')@.
 hash :: ByteString -> Hash
