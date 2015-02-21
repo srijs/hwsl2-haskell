@@ -33,7 +33,6 @@ import System.IO.Unsafe
 
 import Data.ByteString (ByteString)
 
-import Control.Monad (mapM_)
 import Data.Monoid
 import Data.Functor
 import Data.Foldable (Foldable)

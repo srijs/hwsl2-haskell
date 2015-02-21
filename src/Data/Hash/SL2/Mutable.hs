@@ -18,7 +18,7 @@ import Data.ByteString.Unsafe
 
 import Data.Foldable (Foldable, foldlM, foldrM)
 
-import Data.Hash.SL2.Internal (Hash, hashSize, hashLen)
+import Data.Hash.SL2.Internal (Hash, hashLen)
 import qualified Data.Hash.SL2.Internal as Internal
 import Data.Hash.SL2.Unsafe
 
