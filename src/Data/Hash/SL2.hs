@@ -3,17 +3,22 @@
 -- License    : MIT
 -- Maintainer : Sam Rijs <srijs@airpost.net>
 --
--- An algebraic hash function, inspired by the paper "Hashing with SL2" by
+-- An algebraic hash function, inspired by the paper /Hashing with SL2/ by
 -- Tillich and Zemor.
 --
 -- The hash function is based on matrix multiplication in the special linear group
 -- of degree 2, over a Galois field of order 2^127,  with all computations modulo
 -- the polynomial x^127 + x^63 + 1.
 --
--- This construction gives some nice properties, which traditional "bit-scambling"
+-- This construction gives some nice properties, which traditional bit-scambling
 -- hash functions don't possess, including it being composable. It holds:
 --
 -- prop> hash (m1 <> m2) == hash m1 <> hash m2
+--
+-- Following that, the hash function is also parallelisable. If a message can be divided
+-- into a list of chunks, the hash of the message can be calculated in parallel:
+--
+-- > mconcat (parMap rpar hash chunks)
 --
 -- All operations in this package are implemented in a very efficient manner using SSE instructions.
 --
@@ -28,6 +33,7 @@ import System.IO.Unsafe
 
 import Data.ByteString (ByteString)
 
+import Control.Monad (mapM_)
 import Data.Monoid
 import Data.Functor
 import Data.Foldable (Foldable)
@@ -41,6 +47,8 @@ instance Eq Hash where
 instance Monoid Hash where
   mempty = fst $ unsafePerformIO $ unsafeWithNew Mutable.unit
   mappend a b = fst $ unsafePerformIO $ unsafeWithNew (unsafeUseAsPtr2 a b . Mutable.concat)
+  mconcat hs = fst $ unsafePerformIO $ Mutable.withUnit $ \up ->
+    mapM_ (flip unsafeUseAsPtr $ Mutable.concat up up) hs
 
 -- | /O(n)/ Calculate the hash of the 'ByteString'. Alias for @('mempty' '<+')@.
 hash :: ByteString -> Hash
