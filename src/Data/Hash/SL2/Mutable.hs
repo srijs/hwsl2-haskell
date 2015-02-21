@@ -42,11 +42,11 @@ concat c a b = Imports.concat c a b
 
 -- | /O(n)/ Append the hash of the 'ByteString' to the existing 'Hash'.
 append :: ByteString -> Ptr Hash -> IO ()
-append s p = unsafeUseAsCStringLen s $ \(s', len) -> Imports.append (castPtr p) s' (fromIntegral len)
+append s p = unsafeUseAsCStringLen s $ \(s', len) -> Imports.append p s' (fromIntegral len)
 
 -- | /O(n)/ Prepend the hash of the 'ByteString' to the existing 'Hash'.
 prepend :: ByteString -> Ptr Hash -> IO ()
-prepend s p = unsafeUseAsCStringLen s $ \(s', len) -> Imports.prepend (castPtr p) s' (fromIntegral len)
+prepend s p = unsafeUseAsCStringLen s $ \(s', len) -> Imports.prepend p s' (fromIntegral len)
 
 -- | /O(n)/ Append the hash of every 'ByteString' to the existing 'Hash', from left to right.
 foldAppend :: Foldable t => t ByteString -> Ptr Hash -> IO ()
