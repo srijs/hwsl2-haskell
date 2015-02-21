@@ -5,7 +5,7 @@ module Data.Hash.SL2.Mutable
   , append, prepend
   , foldAppend, foldPrepend
   , serialize, unserialize
-  , withNew, withCopy
+  , withUnit, withCopy
   ) where
 
 import Prelude hiding (concat)
@@ -25,7 +25,7 @@ import qualified Data.Hash.SL2.Internal.Imports as Imports
 instance Storable Hash where
   sizeOf = const hashSize
   alignment = const 0
-  peek p = fmap fst $ withNew $ \hp -> copyBytes hp (castPtr p) hashSize
+  peek p = fmap fst $ unsafeWithNew $ \hp -> copyBytes hp (castPtr p) hashSize
   poke p h = unsafeUseAsPtr h $ \hp -> copyBytes (castPtr p) hp hashSize
 
 -- | /O(1)/ Compare the two hashes for equality.
@@ -73,10 +73,10 @@ unserialize :: String -> Ptr Hash -> IO (Maybe ())
 unserialize s p = withCAStringLen s $ \(s', len) ->
   if len == hashLen then Just `fmap` Imports.unserialize p s' else return Nothing
 
-withNew :: (Ptr Hash -> IO a) -> IO (Hash, a)
-{-# INLINE withNew #-}
-withNew f = mallocForeignPtrBytes hashSize >>= \fp -> (\r -> (H fp, r)) `fmap` withForeignPtr fp (f . castPtr)
+withUnit :: (Ptr Hash -> IO a) -> IO (Hash, a)
+{-# INLINE withUnit #-}
+withUnit f = unsafeWithNew $ \p -> unit p >> f p
 
 withCopy :: Hash -> (Ptr Hash -> IO a) -> IO (Hash, a)
 {-# INLINE withCopy #-}
-withCopy h f = withNew $ \p -> poke p h >> f p
+withCopy h f = unsafeWithNew $ \p -> poke p h >> f p
