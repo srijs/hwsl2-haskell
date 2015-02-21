@@ -123,8 +123,9 @@ benchmark bench
                        Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,
                        criterion >=1.0 && <1.1,
-                       cryptohash >=0.11 && <0.12
+                       cryptohash >=0.11 && <0.12,
+                       parallel >=3.2 && <3.3
   include-dirs:        src
   includes:            src/sl2-inl.h src/gf2p127-inl.h
   install-includes:    src/sl2-inl.h src/gf2p127-inl.h
-  ghc-options:         -optc-msse2 -optc-msse4.1 -optc-mpclmul
+  ghc-options:         -rtsopts -threaded -optc-msse2 -optc-msse4.1 -optc-mpclmul
