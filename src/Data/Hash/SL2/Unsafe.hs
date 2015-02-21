@@ -6,9 +6,11 @@ import System.IO.Unsafe
 import Data.Hash.SL2.Internal
 
 unsafeUseAsPtr :: Hash -> (Ptr Hash -> IO a) -> IO a
+{-# INLINE unsafeUseAsPtr #-}
 unsafeUseAsPtr (H fp) f = withForeignPtr fp (f . castPtr)
 
 unsafeUseAsPtr2 :: Hash -> Hash -> (Ptr Hash -> Ptr Hash -> IO a) -> IO a
+{-# INLINE unsafeUseAsPtr2 #-}
 unsafeUseAsPtr2 a b f = unsafeUseAsPtr a (unsafeUseAsPtr b . f)
 
 unsafePack :: [Word8] -> Hash

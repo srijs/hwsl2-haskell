@@ -113,3 +113,23 @@ test-suite test
   includes:            src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
   install-includes:    src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
   cc-options:          -msse2 -msse4.1 -mpclmul
+
+benchmark bench
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      src
+  main-is:             Data/Hash/SL2/Benchmark.hs
+  other-modules:       Data.Hash.SL2
+                       Data.Hash.SL2.Mutable
+                       Data.Hash.SL2.Unsafe
+                       Data.Hash.SL2.Internal
+                       Data.Hash.SL2.Internal.Imports
+  build-depends:       base >=4.7 && <4.8,
+                       Cabal >=1.9.2,
+                       bytestring >=0.10 && <0.11,
+                       criterion >=1.0 && <1.1,
+                       cryptohash >=0.11 && <0.12
+  include-dirs:        src
+  c-sources:           src/tillich-zemor.c
+  includes:            src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
+  install-includes:    src/tillich-zemor.h src/sl2-inl.h src/gf2p127-inl.h
+  cc-options:          -msse2 -msse4.1 -mpclmul
