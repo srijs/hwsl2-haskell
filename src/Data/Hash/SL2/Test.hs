@@ -4,6 +4,7 @@ import Data.Word
 
 import Data.Hash.SL2
 import Data.Hash.SL2.Internal
+import Data.Hash.SL2.Unsafe
 
 import qualified Data.ByteString as B
 
@@ -22,7 +23,7 @@ instance Arbitrary B.ByteString where
   arbitrary = fmap B.pack arbitrary
 
 instance Arbitrary Hash where
-  arbitrary = fmap fromBytes $ mapM choose (take 64 $ cycle $ replicate 15 (0, 255) ++ [(0, 127)])
+  arbitrary = fmap unsafePack $ mapM choose (take 64 $ cycle $ replicate 15 (0, 255) ++ [(0, 127)])
 
 tests :: IO [Test]
 tests = return
