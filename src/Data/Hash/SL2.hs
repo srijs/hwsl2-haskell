@@ -20,7 +20,7 @@
 
 module Data.Hash.SL2 (Hash, hash, (<+), (+>), (<|), (|>), parse) where
 
-import Data.Hash.SL2.Internal
+import Data.Hash.SL2.Internal (Hash)
 import Data.Hash.SL2.Unsafe
 import qualified Data.Hash.SL2.Mutable as Mutable
 

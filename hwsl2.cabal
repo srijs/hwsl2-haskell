@@ -69,7 +69,6 @@ library
   
   -- Modules included in this library but not exported.
   other-modules:       Data.Hash.SL2.Internal
-                       Data.Hash.SL2.Internal.Imports
   
   -- LANGUAGE extensions used by modules in this package.
   other-extensions:    ForeignFunctionInterface CApiFFI
@@ -101,7 +100,6 @@ test-suite test
                        Data.Hash.SL2.Mutable
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
-                       Data.Hash.SL2.Internal.Imports
   build-depends:       base >=4.7 && <4.8,
                        Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,
@@ -121,7 +119,6 @@ benchmark bench
                        Data.Hash.SL2.Mutable
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
-                       Data.Hash.SL2.Internal.Imports
   build-depends:       base >=4.7 && <4.8,
                        Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,

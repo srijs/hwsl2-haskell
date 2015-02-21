@@ -3,7 +3,7 @@ module Data.Hash.SL2.Test where
 import Data.Word
 
 import Data.Hash.SL2
-import Data.Hash.SL2.Internal
+import Data.Hash.SL2.Internal (Hash)
 import Data.Hash.SL2.Unsafe
 
 import qualified Data.ByteString as B

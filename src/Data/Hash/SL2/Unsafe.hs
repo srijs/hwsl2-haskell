@@ -3,7 +3,7 @@ module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2, unsafeWithNew, uns
 import Foreign
 import System.IO.Unsafe
 
-import Data.Hash.SL2.Internal
+import Data.Hash.SL2.Internal (Hash(H), hashSize)
 
 unsafeUseAsPtr :: Hash -> (Ptr Hash -> IO a) -> IO a
 {-# INLINE unsafeUseAsPtr #-}
