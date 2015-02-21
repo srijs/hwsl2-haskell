@@ -8,8 +8,7 @@ import Data.Hash.SL2.Unsafe
 
 import qualified Data.ByteString as B
 
-import Foreign.ForeignPtr
-import Foreign.Storable
+import Foreign.Safe
 
 import Test.QuickCheck
 import Test.QuickCheck.All

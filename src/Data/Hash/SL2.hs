@@ -15,10 +15,10 @@
 --
 -- prop> hash (m1 <> m2) == hash m1 <> hash m2
 --
--- Following that, the hash function is also parallelisable. If a message can be divided
--- into a list of chunks, the hash of the message can be calculated in parallel:
+-- Following that, the hash function is also parallelisable. If a message @m@ can be divided
+-- into a list of chunks @cs@, the hash of the message can be calculated in parallel:
 --
--- > mconcat (parMap rpar hash chunks)
+-- prop> mconcat (parMap rpar hash cs) == hash m
 --
 -- All operations in this package are implemented in a very efficient manner using SSE instructions.
 --

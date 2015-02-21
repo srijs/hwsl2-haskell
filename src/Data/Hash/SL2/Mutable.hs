@@ -10,7 +10,7 @@ module Data.Hash.SL2.Mutable
 
 import Prelude hiding (concat)
 
-import Foreign
+import Foreign.Safe
 import Foreign.C.String
 
 import Data.ByteString (ByteString)
@@ -21,12 +21,6 @@ import Data.Foldable (Foldable, foldlM, foldrM)
 import Data.Hash.SL2.Internal (Hash, hashSize, hashLen)
 import qualified Data.Hash.SL2.Internal as Internal
 import Data.Hash.SL2.Unsafe
-
-instance Storable Hash where
-  sizeOf = const hashSize
-  alignment = const 0
-  peek p = fmap fst $ unsafeWithNew $ \hp -> copyBytes hp (castPtr p) hashSize
-  poke p h = unsafeUseAsPtr h $ \hp -> copyBytes (castPtr p) hp hashSize
 
 -- | /O(1)/ Compare the two hashes for equality.
 eq :: Ptr Hash -> Ptr Hash -> IO Bool
