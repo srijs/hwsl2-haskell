@@ -1,4 +1,5 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE CApiFFI #-}
 
 module Data.Hash.SL2.Internal.Imports where
 
@@ -7,24 +8,24 @@ import Foreign.C.Types
 
 import Data.Hash.SL2.Internal
 
-foreign import ccall "tillich-zemor.h tz_hash_eq"
+foreign import capi "sl2-inl.h sl2_eq"
   eq :: Ptr Hash -> Ptr Hash -> IO CInt
 
-foreign import ccall "tillich-zemor.h tz_hash_unit"
+foreign import capi "sl2-inl.h sl2_unit"
   unit :: Ptr Hash -> IO ()
 
-foreign import ccall "tillich-zemor.h tz_hash_append"
+foreign import capi "sl2-inl.h sl2_mul_buf_right"
   append :: Ptr Hash -> Ptr CChar -> CSize -> IO ()
 
-foreign import ccall "tillich-zemor.h tz_hash_prepend"
+foreign import capi "sl2-inl.h sl2_mul_buf_left"
   prepend :: Ptr Hash -> Ptr CChar -> CSize -> IO ()
 
-foreign import ccall "tillich-zemor.h tz_hash_concat"
+foreign import capi "sl2-inl.h sl2_mul"
   concat :: Ptr Hash -> Ptr Hash -> Ptr Hash -> IO ()
 
-foreign import ccall "tillich-zemor.h tz_hash_serialize"
+foreign import capi "sl2-inl.h sl2_serialize"
   serialize :: Ptr Hash -> Ptr CChar -> IO ()
 
-foreign import ccall "tillich-zemor.h tz_hash_unserialize"
+foreign import capi "sl2-inl.h sl2_unserialize"
   unserialize :: Ptr Hash -> Ptr CChar -> IO ()
 
