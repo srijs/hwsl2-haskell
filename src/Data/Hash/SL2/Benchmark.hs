@@ -6,7 +6,7 @@ import Data.List (foldl')
 import Control.Parallel.Strategies
 
 import qualified Data.ByteString as B
-import qualified Crypto.Hash.SHA1 as SHA1
+import qualified Crypto.Hash.SHA256 as SHA256
 
 import Criterion.Main
 
@@ -18,5 +18,5 @@ main = defaultMain
   [ bench "hwsl2 append" $ whnf (mempty <+) bs4M
   , bench "hwsl2 prepend" $ whnf (+> mempty) bs4M
   , bench "hwsl2 append parallel" $ whnf (mconcat . (parMap rpar hash)) [bs1M, bs1M, bs1M, bs1M]
-  , bench "sha1" $ whnf SHA1.hash bs4M
+  , bench "sha256" $ whnf SHA256.hash bs4M
   ]
