@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE CApiFFI #-}
 

@@ -1,3 +1,5 @@
+{-# LANGUAGE Trustworthy #-}
+
 module Data.Hash.SL2.Mutable
   ( eq
   , unit

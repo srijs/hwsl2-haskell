@@ -1,3 +1,5 @@
+{-# LANGUAGE Unsafe #-}
+
 module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2, unsafeWithNew, unsafePack) where
 
 import Foreign.Safe

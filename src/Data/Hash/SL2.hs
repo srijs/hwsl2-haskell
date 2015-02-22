@@ -1,3 +1,5 @@
+{-# LANGUAGE Trustworthy #-}
+
 -- |
 -- Module     : Data.Hash.SL2
 -- License    : MIT
