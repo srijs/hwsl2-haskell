@@ -57,7 +57,7 @@ TEST multiplication_special_bit_left(void) {
   for (i = 0; i < 1024; i++) {
     sl2_rand(a);
     sl2_mul(b, m[i % 2], a);
-    sl2_mul_bit_left(a, i % 2);
+    sl2_mul_bit_left(&a[0][0], &a[0][1], &a[1][0], &a[1][1], _mm_load_si128(&minmax[i % 2]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[0][0]), gf2p127_hex(bufb, b[0][0]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[0][1]), gf2p127_hex(bufb, b[0][1]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[1][0]), gf2p127_hex(bufb, b[1][0]));
@@ -74,7 +74,7 @@ TEST multiplication_special_bit_right(void) {
   for (i = 0; i < 1024; i++) {
     sl2_rand(a);
     sl2_mul(b, a, m[i % 2]);
-    sl2_mul_bit_right(a, i % 2);
+    sl2_mul_bit_right(&a[0][0], &a[0][1], &a[1][0], &a[1][1], _mm_load_si128(&minmax[i % 2]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[0][0]), gf2p127_hex(bufb, b[0][0]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[0][1]), gf2p127_hex(bufb, b[0][1]));
     ASSERT_STR_EQ(gf2p127_hex(bufa, a[1][0]), gf2p127_hex(bufb, b[1][0]));

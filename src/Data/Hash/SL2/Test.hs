@@ -32,8 +32,11 @@ tests = return
     [ testProperty "forms a monoid" $
         eq $ prop_Monoid (T :: T Hash)
 
-    , testProperty "is distributive" $
+    , testProperty "is distributive (mappend)" $
         \a b -> hash (a <> b) == hash a <> hash b
+
+    , testProperty "is distributive (mconcat)" $
+        \a b -> hash (a <> b) == mconcat (map hash [a, b])
 
     ]
 

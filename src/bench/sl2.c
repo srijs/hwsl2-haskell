@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../tillich-zemor.h"
+#include "../sl2-inl.h"
 
 static long long ustime(void) {
   struct timeval tv;
@@ -25,23 +25,23 @@ int main(void) {
   read(fd, buf, size);
   unsigned char str[1024];
   long long start, end;
-  tz_hash_t a = malloc(TZ_HASH_SIZE);
+  sl2_t a;
   printf("Benchmarking prepend...\n");
   start = ustime();
-  tz_hash_unit(a);
-  tz_hash_prepend(a, buf, size);
+  sl2_unit(a);
+  sl2_mul_buf_left(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
   memset(str, 0, 1024);
-  tz_hash_serialize(a, str);
+  sl2_serialize(a, str);
   printf("Result: %s\n", str);
   printf("Benchmarking append...\n");
   start = ustime();
-  tz_hash_unit(a);
-  tz_hash_append(a, buf, size);
+  sl2_unit(a);
+  sl2_mul_buf_right(a, buf, size);
   end = ustime();
   printf("Took %lli nanoseconds.\n", end - start);
   memset(str, 0, 1024);
-  tz_hash_serialize(a, str);
+  sl2_serialize(a, str);
   printf("Result: %s\n", str);
 }

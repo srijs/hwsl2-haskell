@@ -44,19 +44,11 @@ gf2p127_t gf2p127_mul_01(const gf2p127_t a) {
   return a;
 }
 
-static const uint32_t x127[4] = {0, 0, 0, 1 << 31};
+static const gf2p127_t *minmax __attribute__((__aligned__(16))) =
+  (gf2p127_t *)(uint64_t [4]){0, 0, UINT64_MAX, UINT64_MAX};
 
-static const inline
-gf2p127_t gf2p127_mul_10_left(const gf2p127_t a) {
-  // Shift lower and upper halves left by one bit,
-  // resembling a multiplication by two.
-  gf2p127_t sl = _mm_slli_epi64(a, 1);
-  // Check for a x^127 overflow, and add the polynom and carry bit.
-  gf2p127_t one = _mm_srli_epi64(_mm_alignr_epi8(a, sl, 8), 63);
-  gf2p127_t over = _mm_and_si128(sl, _mm_loadu_si128((const gf2p127_t *)x127));
-  gf2p127_t x127x63 = _mm_unpackhi_epi64(over, over);
-  return _mm_xor_si128(_mm_xor_si128(sl, one), x127x63);
-}
+static const gf2p127_t *x127 __attribute__((__aligned__(16))) =
+  (gf2p127_t *)(uint32_t [4]){0, 0, 0, 1 << 31};
 
 static const inline
 gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
@@ -65,7 +57,8 @@ gf2p127_t gf2p127_mul_10(const gf2p127_t a) {
   gf2p127_t sl = _mm_slli_epi64(a, 1);
   // Check for a x^127 overflow, and add the polynom and carry bit.
   gf2p127_t one = _mm_srli_epi64(_mm_alignr_epi8(a, sl, 8), 63);
-  gf2p127_t x127x63 = _mm_slli_epi64(_mm_unpacklo_epi64(one, one), 63);
+  gf2p127_t over = _mm_and_si128(sl, _mm_load_si128(x127));
+  gf2p127_t x127x63 = _mm_unpackhi_epi64(over, over);
   return _mm_xor_si128(_mm_xor_si128(sl, one), x127x63);
 }
 
@@ -109,28 +102,6 @@ gf2p127_t gf2p127_mul(const gf2p127_t a, const gf2p127_t b) {
   lo = _mm_xor_si128(lo, _mm_slli_epi64(hi, 63));
 
   return lo;
-}
-
-static inline
-char *gf2p127_show(char *buf, const gf2p127_t m) {
-  __uint128_t a = (__uint128_t)m;
-  unsigned int k;
-  int n;
-  char *str = buf;
-  if (a & 1) {
-    str += sprintf(str, "1");
-  } else {
-    str += sprintf(str, "0");
-  }
-  a >>= 1;
-  for (k = 1; k < 128; k++) {
-    if (a & 1) {
-      n = sprintf(str, " + 2^%i", k);
-      str += n;
-    }
-    a >>= 1;
-  }
-  return buf;
 }
 
 static inline
