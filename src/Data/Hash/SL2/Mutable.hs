@@ -1,7 +1,8 @@
 {-# LANGUAGE Trustworthy #-}
 
 module Data.Hash.SL2.Mutable
-  ( eq
+  ( valid
+  , eq
   , unit
   , concat
   , append, prepend
@@ -24,8 +25,14 @@ import Data.Hash.SL2.Internal (Hash, hashLen)
 import qualified Data.Hash.SL2.Internal as Internal
 import Data.Hash.SL2.Unsafe
 
+-- | /O(1)/ Check a hash for bit-level validity.
+valid :: Ptr Hash -> IO Bool
+{-# INLINE valid #-}
+valid h = fmap toBool $ Internal.valid h
+
 -- | /O(1)/ Compare the two hashes for equality.
 eq :: Ptr Hash -> Ptr Hash -> IO Bool
+{-# INLINE eq #-}
 eq a b = fmap toBool $ Internal.eq a b
 
 -- | /O(1)/ Set the 'Hash' to the empty value.

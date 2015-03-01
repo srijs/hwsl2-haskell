@@ -22,14 +22,38 @@ instance Arbitrary B.ByteString where
   arbitrary = fmap B.pack arbitrary
 
 instance Arbitrary Hash where
-  arbitrary = fmap unsafePack $ mapM choose (take 64 $ cycle $ replicate 15 (0, 255) ++ [(0, 127)])
+  arbitrary = fmap hash arbitrary
 
 tests :: IO [Test]
 tests = return
 
-  [ testGroup "composition"
+  [ testGroup "packing"
 
-    [ testProperty "forms a monoid" $
+    [ testProperty "identity 8-bit" $
+        \a -> Just a == pack8 (unpack8 a)
+
+    , testProperty "identity 16-bit" $
+        \a -> Just a == pack16 (unpack16 a)
+
+    , testProperty "identity 32-bit" $
+        \a -> Just a == pack32 (unpack32 a)
+
+    , testProperty "identity 64-bit" $
+        \a -> Just a == pack64 (unpack64 a)
+    ]
+
+  , testGroup "composition"
+
+    [ testProperty "empty is valid" $
+        valid (mempty :: Hash)
+
+    , testProperty "hash is valid" $
+        \a -> valid (hash a)
+
+    , testProperty "append is valid" $
+        \a b -> valid (hash a <> hash b)
+
+    , testProperty "forms a monoid" $
         eq $ prop_Monoid (T :: T Hash)
 
     , testProperty "is distributive (mappend)" $

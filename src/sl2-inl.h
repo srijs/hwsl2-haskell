@@ -5,6 +5,18 @@
 typedef gf2p127_t sl2_t[2][2] __attribute__((__aligned__(16)));
 
 static inline
+_Bool sl2_valid(sl2_t a) {
+  gf2p127_t det = gf2p127_add(gf2p127_mul(a[0][0], a[1][1]),
+                              gf2p127_mul(a[0][1], a[1][0]));
+  return _mm_extract_epi64(det, 0) == 1 &&
+         _mm_extract_epi64(det, 1) == 0 &&
+         gf2p127_valid(a[0][0]) &&
+         gf2p127_valid(a[0][1]) &&
+         gf2p127_valid(a[1][0]) &&
+         gf2p127_valid(a[1][1]);
+}
+
+static inline
 _Bool sl2_eq(sl2_t a, sl2_t b) {
   return gf2p127_eq(a[0][0], b[0][0]) &&
          gf2p127_eq(a[0][1], b[0][1]) &&

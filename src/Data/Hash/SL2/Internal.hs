@@ -12,6 +12,9 @@ newtype Hash = H (ForeignPtr ())
 hashSize = 64 :: Int
 hashLen = 86 :: Int
 
+foreign import capi "sl2-inl.h sl2_valid"
+  valid :: Ptr Hash -> IO CInt
+
 foreign import capi "sl2-inl.h sl2_eq"
   eq :: Ptr Hash -> Ptr Hash -> IO CInt
 

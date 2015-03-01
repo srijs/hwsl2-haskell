@@ -8,6 +8,11 @@
 typedef __m128i gf2p127_t;
 
 static const inline
+_Bool gf2p127_valid(const gf2p127_t a) {
+  return (_mm_extract_epi64(a, 1) & (UINT64_C(1) << 63)) == 0;
+}
+
+static const inline
 _Bool gf2p127_eq(const gf2p127_t a, const gf2p127_t b) {
   _Bool lo = _mm_extract_epi64(a, 0) == _mm_extract_epi64(b, 0);
   _Bool hi = _mm_extract_epi64(a, 1) == _mm_extract_epi64(b, 1);

@@ -1,6 +1,6 @@
 {-# LANGUAGE Unsafe #-}
 
-module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2, unsafeWithNew, unsafePack) where
+module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2, unsafeWithNew, unsafePack, unsafeUnpack) where
 
 import Foreign.Safe
 import System.IO.Unsafe
@@ -25,9 +25,18 @@ unsafeWithNew :: (Ptr Hash -> IO a) -> IO (Hash, a)
 {-# INLINE unsafeWithNew #-}
 unsafeWithNew f = mallocForeignPtr >>= \fp -> (\r -> (H (castForeignPtr fp), r)) `fmap` withForeignPtr fp f
 
-unsafePack :: [Word8] -> Hash
-unsafePack ws = H $ unsafePerformIO $ do
-  fp <- mallocForeignPtrArray0 hashSize
+unsafePack :: Storable a => [a] -> Hash
+unsafePack as@(a:_) = H $ unsafePerformIO $ do
+  let len = hashSize `div` sizeOf a
+  fp <- mallocForeignPtrArray0 len
   withForeignPtr fp $ \p ->
-    mapM_ (\(w, off) -> pokeElemOff p off w) (zip ws [0..hashSize-1])
+    mapM_ (\(a, off) -> pokeElemOff p off a) (zip as [0..len-1])
   return (castForeignPtr fp)
+
+unsafeUnpack :: Storable a => Hash -> [a]
+unsafeUnpack h = unsafePerformIO $ unsafeUseAsPtr h $ rec 0
+  where rec off _ | off >= hashSize = return []
+        rec off p = do
+          a <- peekByteOff (castPtr p) off
+          r <- rec (off + sizeOf a) p
+          return (a : r)
