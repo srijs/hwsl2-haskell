@@ -107,7 +107,7 @@ test-suite test
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
   build-depends:       base >=4.7 && <4.8,
-                       Cabal >=1.22.0.0,
+                       Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,
                        QuickCheck >=2.7 && <2.8,
                        quickcheck-properties>=0.1 && <0.2,
@@ -126,7 +126,7 @@ benchmark bench
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
   build-depends:       base >=4.7 && <4.8,
-                       Cabal >=1.22.0.0,
+                       Cabal >=1.9.2,
                        bytestring >=0.10 && <0.11,
                        criterion >=1.0 && <1.1,
                        cryptohash >=0.11 && <0.12,
