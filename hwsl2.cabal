@@ -10,7 +10,7 @@ name:                hwsl2
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.2.0.0
+version:             0.3.0.0
 
 -- A short (one-line) description of the package.
 synopsis:            Hashing with SL2
@@ -85,7 +85,7 @@ library
   -- Directories containing source files.
   hs-source-dirs:      src
 
-  ghc-options:         -fwarn-unused-imports
+  ghc-options:         -fwarn-unused-imports -ddump-simpl -ddump-to-file
 
   -- Options for foreign source files.
   include-dirs:        src
@@ -107,7 +107,7 @@ test-suite test
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
   build-depends:       base >=4.7 && <4.8,
-                       Cabal >=1.9.2,
+                       Cabal >=1.22.0.0,
                        bytestring >=0.10 && <0.11,
                        QuickCheck >=2.7 && <2.8,
                        quickcheck-properties>=0.1 && <0.2,
@@ -126,7 +126,7 @@ benchmark bench
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
   build-depends:       base >=4.7 && <4.8,
-                       Cabal >=1.9.2,
+                       Cabal >=1.22.0.0,
                        bytestring >=0.10 && <0.11,
                        criterion >=1.0 && <1.1,
                        cryptohash >=0.11 && <0.12,
