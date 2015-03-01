@@ -10,7 +10,7 @@ name:                hwsl2
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.3.0.0
+version:             0.3.0.1
 
 -- A short (one-line) description of the package.
 synopsis:            Hashing with SL2
@@ -85,7 +85,7 @@ library
   -- Directories containing source files.
   hs-source-dirs:      src
 
-  ghc-options:         -fwarn-unused-imports -ddump-simpl -ddump-to-file
+  ghc-options:         -fwarn-unused-imports
 
   -- Options for foreign source files.
   include-dirs:        src
