@@ -1,5 +1,7 @@
 module Data.Hash.SL2.Test where
 
+import Prelude hiding (concat)
+
 import Data.Word
 
 import Data.Hash.SL2
@@ -68,14 +70,14 @@ tests = return
 
     [ testGroup "single string" $
 
-      [ testProperty "equal to ((. hash) . (<>))" $
-          \a b -> ((. hash) . (<>)) a b == a <+ b
+      [ testProperty "equal to ((. hash) . concat)" $
+          \a b -> ((. hash) . concat) a b == a `append` b
       ]
 
     , testGroup "multiple strings" $
 
-      [ testProperty "equal to (foldl (<+))" $
-          \a b -> (foldl (<+)) a b == a <| b
+      [ testProperty "equal to (foldl append)" $
+          \a b -> (foldl append) a b == a `foldAppend` b
       ]
 
     ]
@@ -84,14 +86,14 @@ tests = return
 
     [ testGroup "single string" $
 
-      [ testProperty "equal to ((<>) . hash)" $
-          \a b -> ((<>) . hash) a b == a +> b
+      [ testProperty "equal to (concat . hash)" $
+          \a b -> (concat . hash) a b == a `prepend` b
       ]
 
     , testGroup "multiple strings" $
 
-      [ testProperty "equal to (flip (foldr (+>)))" $
-          \a b -> (flip (foldr (+>))) a b == a |> b
+      [ testProperty "equal to (flip (foldr prepend)" $
+          \a b -> (flip (foldr prepend)) a b == a `foldPrepend` b
       ]
 
     ]

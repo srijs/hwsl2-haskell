@@ -1,6 +1,5 @@
 import Data.Hash.SL2
 
-import Data.Monoid
 import Data.List (foldl')
 
 import Control.Parallel.Strategies
@@ -15,8 +14,8 @@ bs2M = B.pack $ take (2 * 1024 * 1024) $ cycle [0..255]
 bs4M = B.pack $ take (4 * 1024 * 1024) $ cycle [0..255]
 
 main = defaultMain
-  [ bench "hwsl2 append" $ whnf (mempty <+) bs4M
-  , bench "hwsl2 prepend" $ whnf (+> mempty) bs4M
-  , bench "hwsl2 append parallel" $ whnf (mconcat . (parMap rpar hash)) [bs1M, bs1M, bs1M, bs1M]
+  [ bench "hwsl2 append" $ whnf (append union) bs4M
+  , bench "hwsl2 prepend" $ whnf (flip prepend union) bs4M
+  , bench "hwsl2 append parallel" $ whnf (concatAll . (parMap rpar hash)) [bs1M, bs1M, bs1M, bs1M]
   , bench "sha256" $ whnf SHA256.hash bs4M
   ]
