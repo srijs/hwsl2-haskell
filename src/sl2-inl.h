@@ -26,13 +26,18 @@ _Bool sl2_eq(sl2_t a, sl2_t b) {
 
 static inline
 int sl2_cmp(sl2_t a, sl2_t b) {
-  unsigned char u1, u2;
+  uint64_t *ua = (uint64_t *)a;
+  uint64_t *ub = (uint64_t *)b;
   int i;
-  for (i = 0; i < sizeof(sl2_t); i++) {
-    u1 = ((unsigned char *)a)[i];
-    u2 = ((unsigned char *)b)[i];
-    if (u1 != u2) {
-      return u1 - u2;
+  for (i = 0; i < sizeof(sl2_t) / sizeof(uint64_t); i++) {
+    if (ua[i] == ub[i]) {
+      continue;
+    }
+    if (ua[i] > ub[i]) {
+      return 1;
+    }
+    if (ua[i] < ub[i]) {
+      return -1;
     }
   }
   return 0;
