@@ -29,7 +29,34 @@ instance Arbitrary Hash where
 tests :: IO [Test]
 tests = return
 
-  [ testGroup "packing"
+  [ testGroup "equality"
+
+    [ testProperty "true" $
+        \a -> hash a == hash a
+
+    , testProperty "false" $
+        \a b -> (a /= b) ==> hash a /= hash b
+    ]
+
+  , testGroup "compare"
+
+    [ testProperty "eq" $
+        \a -> compare (hash a) (hash a) == EQ
+
+    , testProperty "gt" $
+        \a b c -> (a > b && b > c) ==> (a :: Hash) > c
+
+    , testProperty "ge" $
+        \a b c -> (a >= b && b >= c) ==> (a :: Hash) >= c
+
+    , testProperty "lt" $
+        \a b c -> (a < b && b < c) ==> (a :: Hash) < c
+
+    , testProperty "le" $
+        \a b c -> (a <= b && b <= c) ==> (a :: Hash) <= c
+    ]
+
+  , testGroup "packing"
 
     [ testProperty "identity 8-bit" $
         \a -> Just a == pack8 (unpack8 a)
