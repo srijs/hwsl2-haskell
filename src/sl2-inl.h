@@ -25,6 +25,20 @@ _Bool sl2_eq(sl2_t a, sl2_t b) {
 }
 
 static inline
+int sl2_cmp(sl2_t a, sl2_t b) {
+  unsigned char u1, u2;
+  int i;
+  for (i = 0; i < sizeof(sl2_t); i++) {
+    u1 = ((unsigned char *)a)[i];
+    u2 = ((unsigned char *)b)[i];
+    if (u1 != u2) {
+      return u1 - u2;
+    }
+  }
+  return 0;
+}
+
+static inline
 void sl2_copy(sl2_t dst, sl2_t src) {
   dst[0][0] = src[0][0];
   dst[0][1] = src[0][1];

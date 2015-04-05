@@ -2,7 +2,7 @@
 
 module Data.Hash.SL2.Mutable
   ( valid
-  , eq
+  , eq, cmp
   , unit
   , concat
   , append, prepend
@@ -34,6 +34,11 @@ valid h = fmap toBool $ Internal.valid h
 eq :: Ptr Hash -> Ptr Hash -> IO Bool
 {-# INLINE eq #-}
 eq a b = fmap toBool $ Internal.eq a b
+
+-- | /O(1)/ Compare two hashes.
+cmp :: Ptr Hash -> Ptr Hash -> IO Ordering
+{-# INLINE cmp #-}
+cmp a b = fmap (compare 0) $ Internal.cmp a b
 
 -- | /O(1)/ Set the 'Hash' to the empty value.
 unit :: Ptr Hash -> IO ()

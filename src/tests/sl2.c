@@ -8,6 +8,18 @@
 
 SUITE(sl2);
 
+TEST cmp(void) {
+  sl2_t a, b;
+  int i;
+  for (i = 0; i < 1024; i++) {
+    sl2_rand(a);
+    sl2_rand(b);
+    ASSERT(sl2_cmp(a, a) == 0);
+    ASSERT(sl2_cmp(a, b) != 0);
+  }
+  PASS();
+}
+
 TEST multiplication(void) {
   sl2_t a, b, c, d;
   char bufa[1024], bufb[1024];
@@ -101,6 +113,7 @@ TEST serialize(void) {
 }
 
 GREATEST_SUITE(sl2) {
+  RUN_TEST(cmp);
   RUN_TEST(multiplication);
   RUN_TEST(multiplication_associativity);
   RUN_TEST(multiplication_special_bit_left);

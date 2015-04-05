@@ -64,6 +64,9 @@ instance Show Hash where
 instance Eq Hash where
   a == b = unsafePerformIO $ unsafeUseAsPtr2 a b Mutable.eq
 
+instance Ord Hash where
+  compare a b = unsafePerformIO $ unsafeUseAsPtr2 a b Mutable.cmp
+
 instance Monoid Hash where
   mempty = unit
   mappend = concat

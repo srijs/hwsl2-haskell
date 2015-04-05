@@ -18,6 +18,9 @@ foreign import capi "sl2-inl.h sl2_valid"
 foreign import capi "sl2-inl.h sl2_eq"
   eq :: Ptr Hash -> Ptr Hash -> IO CInt
 
+foreign import capi "sl2-inl.h sl2_cmp"
+  cmp :: Ptr Hash -> Ptr Hash -> IO CInt
+
 foreign import capi "sl2-inl.h sl2_unit"
   unit :: Ptr Hash -> IO ()
 
