@@ -1,7 +1,7 @@
 TARGET = coholos.so
 LIBS =
 CC = clang
-CFLAGS = -Wall -msse2 -msse4.1 -mpclmul -O3
+CFLAGS = -Wall -mavx2 -msse2 -msse4.1 -mpclmul -O3
 
 .PHONY: default all clean test bench
 

@@ -92,43 +92,42 @@ void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n) {
 }
 
 static inline
-void sl2_mul_bit_right(gf2p127_t *a00, gf2p127_t *a01, gf2p127_t *a10, gf2p127_t *a11, gf2p127_t bits) {
+void sl2_mul_bit_right(gf2p127x2_t *a00a10, gf2p127x2_t *a01a11, gf2p127_t bits) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
   // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
-  gf2p127_t a00_ = *a00;
-  gf2p127_t a10_ = *a10;
-  *a00 = gf2p127_add(gf2p127_mul_10(*a00), *a01);
-  *a10 = gf2p127_add(gf2p127_mul_10(*a10), *a11);
-  *a01 = gf2p127_add(a00_, _mm_and_si128(*a00, bits));
-  *a11 = gf2p127_add(a10_, _mm_and_si128(*a10, bits));
+  gf2p127x2_t bb = _mm256_broadcastsi128_si256(bits);
+  gf2p127x2_t a00a10_ = *a00a10;
+  gf2p127x2_t a01a11_ = *a01a11;
+  gf2p127x2_t mul = gf2p127x2_mul_10(a00a10_);
+  gf2p127x2_t muladd = _mm256_xor_si256(mul, a01a11_);
+  gf2p127x2_t masked = _mm256_and_si256(muladd, bb);
+  gf2p127x2_t maskedadd = _mm256_xor_si256(masked, a00a10_);
+  *a01a11 = maskedadd;
+  *a00a10 = muladd;
 }
 
 static inline
-void sl2_mul_bits_right(gf2p127_t *a00, gf2p127_t *a01, gf2p127_t *a10, gf2p127_t *a11, unsigned char byte) {
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 6) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 5) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 4) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 3) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 2) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 1) & 1]));
-  sl2_mul_bit_right(a00, a01, a10, a11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
+void sl2_mul_bits_right(gf2p127x2_t *a00a01, gf2p127x2_t *a10a11, unsigned char byte) {
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 6) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 5) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 4) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 3) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 2) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 1) & 1]));
+  sl2_mul_bit_right(a00a01, a10a11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
 }
 
 static inline
 void sl2_mul_buf_right(sl2_t a, unsigned char *buf, size_t n) {
-  gf2p127_t a00 = _mm_load_si128(&a[0][0]);
-  gf2p127_t a01 = _mm_load_si128(&a[0][1]);
-  gf2p127_t a10 = _mm_load_si128(&a[1][0]);
-  gf2p127_t a11 = _mm_load_si128(&a[1][1]);
   size_t i;
+  gf2p127x2_t a00a10 = _mm256_loadu2_m128i(&a[0][0], &a[1][0]);
+  gf2p127x2_t a01a11 = _mm256_loadu2_m128i(&a[0][1], &a[1][1]);
   for (i = 0; i < n; i++) {
-    sl2_mul_bits_right(&a00, &a01, &a10, &a11, buf[i]);
+    sl2_mul_bits_right(&a00a10, &a01a11, buf[i]);
   }
-  a[0][0] = a00;
-  a[0][1] = a01;
-  a[1][0] = a10;
-  a[1][1] = a11;
+  _mm256_storeu2_m128i(&a[0][1], &a[1][1], a01a11);
+  _mm256_storeu2_m128i(&a[0][0], &a[1][0], a00a10);
 }
 
 static inline
