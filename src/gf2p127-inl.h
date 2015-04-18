@@ -83,10 +83,11 @@ gf2p127x2_t gf2p127x2_mul_10(const gf2p127x2_t ab) {
   gf2p127x2_t carried = _mm256_xor_si256(sl, carry2);
   // Check for the x^127 overflow, and construct the x^127 + x^63 + x polymomial.
   gf2p127x2_t over1 = _mm256_srli_epi64(sl, 63);
+  gf2p127x2_t overlo = _mm256_srli_si256(over1, 8);
+  gf2p127x2_t overlod = _mm256_xor_si256(overlo, carried);
   gf2p127x2_t over2 = _mm256_slli_epi64(over1, 63);
   gf2p127x2_t overhi = _mm256_unpackhi_epi64(over2, over2);
-  gf2p127x2_t overlo = _mm256_srli_si256(over1, 8);
-  return _mm256_xor_si256(overhi, _mm256_xor_si256(overlo, carried));
+  return _mm256_xor_si256(overhi, overlod);
 }
 #endif
 
