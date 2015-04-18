@@ -77,17 +77,14 @@ gf2p127x2_t gf2p127x2_mul_10(const gf2p127x2_t ab) {
   // Shift lower and upper halves left by one bit,
   // resembling a multiplication by two.
   gf2p127x2_t sl = _mm256_slli_epi64(ab, 1);
-  // Check for the x^63 carry bit, and construct x^64 polynomial.
-  gf2p127x2_t carry1 = _mm256_srli_epi64(ab, 63);
-  gf2p127x2_t carry2 = _mm256_permute4x64_epi64(carry1, 0b10110001);
-  gf2p127x2_t carried = _mm256_xor_si256(sl, carry2);
-  // Check for the x^127 overflow, and construct the x^127 + x^63 + x polymomial.
+  // Check for the x^63 carry bit, and the x^127 overflow, and construct x^64 + 1 polynomial.
+  gf2p127x2_t carry = _mm256_srli_epi64(_mm256_alignr_epi8(ab, sl, 8), 63);
+  gf2p127x2_t carried = _mm256_xor_si256(sl, carry);
+  // Check for the x^127 overflow, and construct the x^127 + x^63 polymomial.
   gf2p127x2_t over1 = _mm256_srli_epi64(sl, 63);
-  gf2p127x2_t overlo = _mm256_srli_si256(over1, 8);
-  gf2p127x2_t overlod = _mm256_xor_si256(overlo, carried);
   gf2p127x2_t over2 = _mm256_slli_epi64(over1, 63);
   gf2p127x2_t overhi = _mm256_unpackhi_epi64(over2, over2);
-  return _mm256_xor_si256(overhi, overlod);
+  return _mm256_xor_si256(overhi, carried);
 }
 #endif
 
