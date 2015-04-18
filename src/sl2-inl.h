@@ -51,6 +51,20 @@ void sl2_copy(sl2_t dst, sl2_t src) {
   dst[1][1] = src[1][1];
 }
 
+#ifdef __AVX2__
+static inline
+void sl2_mul_bit_left(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, gf2p127_t bits) {
+  // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
+  // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
+  gf2p127x2_t bb = _mm256_broadcastsi128_si256(bits);
+  gf2p127x2_t masked = _mm256_and_si256(*b10b11, bb);
+  gf2p127x2_t maskedadd = _mm256_xor_si256(*b00b01, masked);
+  gf2p127x2_t mul = gf2p127x2_mul_10(maskedadd);
+  gf2p127x2_t muladd = _mm256_xor_si256(*b10b11, mul);
+  *b10b11 = maskedadd;
+  *b00b01 = muladd;
+}
+#else
 static inline
 void sl2_mul_bit_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t *b11, gf2p127_t bits) {
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
@@ -62,7 +76,21 @@ void sl2_mul_bit_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t 
   *b00 = gf2p127_add(b10_, gf2p127_mul_10(*b10));
   *b01 = gf2p127_add(b11_, gf2p127_mul_10(*b11));
 }
+#endif
 
+#ifdef __AVX2__
+static inline
+void sl2_mul_bits_left(gf2p127x2_t *b00b01, gf2p127x2_t *b10b11, unsigned char byte) {
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 1) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 2) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 3) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 4) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 5) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 6) & 1]));
+  sl2_mul_bit_left(b00b01, b10b11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
+}
+#else
 static inline
 void sl2_mul_bits_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t *b11, unsigned char byte) {
   sl2_mul_bit_left(b00, b01, b10, b11, _mm_load_si128(&minmax[(byte >> 0) & 1]));
@@ -74,7 +102,21 @@ void sl2_mul_bits_left(gf2p127_t *b00, gf2p127_t *b01, gf2p127_t *b10, gf2p127_t
   sl2_mul_bit_left(b00, b01, b10, b11, _mm_load_si128(&minmax[(byte >> 6) & 1]));
   sl2_mul_bit_left(b00, b01, b10, b11, _mm_load_si128(&minmax[(byte >> 7) & 1]));
 }
+#endif
 
+#ifdef __AVX2__
+static inline
+void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n) {
+  gf2p127x2_t b00b01 = _mm256_loadu2_m128i(&b[0][0], &b[0][1]);
+  gf2p127x2_t b10b11 = _mm256_loadu2_m128i(&b[1][0], &b[1][1]);
+  size_t i;
+  for (i = n; i > 0; i--) {
+    sl2_mul_bits_left(&b00b01, &b10b11, buf[i - 1]);
+  }
+  _mm256_storeu2_m128i(&b[0][0], &b[0][1], b00b01);
+  _mm256_storeu2_m128i(&b[1][0], &b[1][1], b10b11);
+}
+#else
 static inline
 void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n) {
   gf2p127_t b00 = b[0][0];
@@ -90,6 +132,7 @@ void sl2_mul_buf_left(sl2_t b, unsigned char *buf, size_t n) {
   b[1][0] = b10;
   b[1][1] = b11;
 }
+#endif
 
 #ifdef __AVX2__
 static inline
