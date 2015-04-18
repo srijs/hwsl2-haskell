@@ -97,12 +97,10 @@ void sl2_mul_bit_right(gf2p127x2_t *a00a10, gf2p127x2_t *a01a11, gf2p127_t bits)
   // A: {00 = 10, 01 = 01, 10 = 01, 11 = 00}
   // B: {00 = 10, 01 = 11, 10 = 01, 11 = 01}
   gf2p127x2_t bb = _mm256_broadcastsi128_si256(bits);
-  gf2p127x2_t a00a10_ = *a00a10;
-  gf2p127x2_t a01a11_ = *a01a11;
-  gf2p127x2_t mul = gf2p127x2_mul_10(a00a10_);
-  gf2p127x2_t muladd = _mm256_xor_si256(mul, a01a11_);
+  gf2p127x2_t mul = gf2p127x2_mul_10(*a00a10);
+  gf2p127x2_t muladd = _mm256_xor_si256(mul, *a01a11);
   gf2p127x2_t masked = _mm256_and_si256(muladd, bb);
-  gf2p127x2_t maskedadd = _mm256_xor_si256(masked, a00a10_);
+  gf2p127x2_t maskedadd = _mm256_xor_si256(masked, *a00a10);
   *a01a11 = maskedadd;
   *a00a10 = muladd;
 }
