@@ -65,6 +65,9 @@ extra-source-files:  README.md
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
+flag avx2
+  description:        Enable AVX 2 optimisations.
+  default:            True
 
 library
   -- Modules exported by the library.
@@ -91,8 +94,12 @@ library
   include-dirs:        src
   includes:            src/sl2-inl.h src/gf2p127-inl.h
   install-includes:    src/sl2-inl.h src/gf2p127-inl.h
-  cc-options:          -mavx2 -msse2 -msse4.1 -mpclmul
-  ghc-options:         -optc-mavx2 -optc-msse2 -optc-msse4.1 -optc-mpclmul
+  if flag(avx2)
+    cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
+  else
+    cc-options:        -Wall -O3 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -O3 -optc-msse4.1 -msse2 -optc-mpclmul
   
   -- Base language which the package is written in.
   default-language:    Haskell2010
@@ -115,7 +122,12 @@ test-suite test
   include-dirs:        src
   includes:            src/sl2-inl.h src/gf2p127-inl.h
   install-includes:    src/sl2-inl.h src/gf2p127-inl.h
-  ghc-options:         -optc-mavx2 -optc-msse2 -optc-msse4.1 -optc-mpclmul
+  if flag(avx2)
+    cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
+  else
+    cc-options:        -Wall -O3 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -O3 -optc-msse4.1 -msse2 -optc-mpclmul
 
 benchmark bench
   type:                exitcode-stdio-1.0
@@ -134,4 +146,9 @@ benchmark bench
   include-dirs:        src
   includes:            src/sl2-inl.h src/gf2p127-inl.h
   install-includes:    src/sl2-inl.h src/gf2p127-inl.h
-  ghc-options:         -rtsopts -threaded -optc-mavx2 -optc-msse2 -optc-msse4.1 -optc-mpclmul
+  if flag(avx2)
+    cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -rtsopts -threaded -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
+  else
+    cc-options:        -Wall -O3 -msse4.1 -msse2 -mpclmul
+    ghc-options:       -rtsopts -threaded -O3 -optc-msse4.1 -msse2 -optc-mpclmul
