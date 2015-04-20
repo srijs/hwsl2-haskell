@@ -43,7 +43,7 @@ module Data.Hash.SL2
   , unpack8, unpack16, unpack32, unpack64
   ) where
 
-import Prelude hiding (concat)
+import Prelude hiding (concat, foldl, foldr)
 
 import Data.Hash.SL2.Internal (Hash)
 import Data.Hash.SL2.Unsafe
@@ -56,7 +56,7 @@ import Data.ByteString (ByteString)
 import Data.Word
 import Data.Monoid
 import Data.Functor
-import Data.Foldable (Foldable)
+import Data.Foldable (Foldable, foldl, foldl', foldr, foldr')
 
 instance Show Hash where
   show h = unsafePerformIO $ unsafeUseAsPtr h Mutable.serialize
@@ -80,21 +80,27 @@ hash = append unit
 -- A significantly faster equivalent of @((. 'hash') . 'concat')@.
 append :: Hash -> ByteString -> Hash
 append h s = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.append s
+{-# RULES "hash/concat" forall h s . concat h (hash s) = append h s #-}
 
 -- | /O(n)/ Prepend the hash of the 'ByteString' to the existing 'Hash'.
 -- A significantly faster equivalent of @('concat' . 'hash')@.
 prepend :: ByteString -> Hash -> Hash
 prepend s h = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.prepend s
+{-# RULES "concat/hash" forall s h . concat (hash s) h = prepend s h #-}
 
 -- | /O(n)/ Append the hash of every 'ByteString' to the existing 'Hash', from left to right.
 -- A significantly faster equivalent of @('foldl' 'append')@.
 foldAppend :: Foldable t => Hash -> t ByteString -> Hash
 foldAppend h ss = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.foldAppend ss
+{-# RULES "foldl/append" forall h ss . foldl append h ss = foldAppend h ss #-}
+{-# RULES "foldl'/append" forall h ss . foldl' append h ss = foldAppend h ss #-}
 
 -- | /O(n)/ Prepend the hash of every 'ByteString' to the existing 'Hash', from right to left.
 -- A significantly faster equivalent of @('flip' ('foldr' 'prepend'))@.
 foldPrepend :: Foldable t => t ByteString -> Hash -> Hash
 foldPrepend ss h = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.foldPrepend ss
+{-# RULES "foldr/prepend" forall ss h . foldr prepend h ss = foldPrepend ss h #-}
+{-# RULES "foldr'/prepend" forall ss h . foldr' prepend h ss = foldPrepend ss h #-}
 
 -- | /O(1)/ The unit element for concatenation. Alias for 'mempty'.
 unit :: Hash
@@ -103,6 +109,7 @@ unit = fst $ unsafePerformIO $ unsafeWithNew Mutable.unit
 -- | /O(1)/ Concatenate two hashes. Alias for 'mappend'.
 concat :: Hash -> Hash -> Hash
 concat a b = fst $ unsafePerformIO $ unsafeWithNew (unsafeUseAsPtr2 a b . Mutable.concat)
+{-# INLINE[1] concat #-}
 
 -- | /O(n)/ Concatenate a list of hashes. Alias for 'mconcat'.
 concatAll :: [Hash] -> Hash
