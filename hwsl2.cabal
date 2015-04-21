@@ -61,6 +61,7 @@ build-type:          Simple
 -- Extra files to be distributed with the package, such as examples or a 
 -- README.
 extra-source-files:  README.md
+                     src/sl2-inl.h src/gf2p127-inl.h
 
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
@@ -92,8 +93,6 @@ library
 
   -- Options for foreign source files.
   include-dirs:        src
-  includes:            src/sl2-inl.h src/gf2p127-inl.h
-  install-includes:    src/sl2-inl.h src/gf2p127-inl.h
   if flag(avx2)
     cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
     ghc-options:       -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
@@ -120,8 +119,6 @@ test-suite test
                        quickcheck-properties>=0.1 && <0.2,
                        cabal-test-quickcheck>=0.1 && <0.2
   include-dirs:        src
-  includes:            src/sl2-inl.h src/gf2p127-inl.h
-  install-includes:    src/sl2-inl.h src/gf2p127-inl.h
   if flag(avx2)
     cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
     ghc-options:       -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
@@ -144,8 +141,6 @@ benchmark bench
                        cryptohash >=0.11 && <0.12,
                        parallel >=3.2 && <3.3
   include-dirs:        src
-  includes:            src/sl2-inl.h src/gf2p127-inl.h
-  install-includes:    src/sl2-inl.h src/gf2p127-inl.h
   if flag(avx2)
     cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul
     ghc-options:       -rtsopts -threaded -O3 -optc-mavx2 -optc-msse4.1 -msse2 -optc-mpclmul
