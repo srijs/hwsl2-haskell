@@ -1,4 +1,4 @@
-#include "HWSL2.h"
+#include "hwsl2_HWSL2.h"
 #include "../sl2-inl.h"
 
 /*
@@ -6,7 +6,7 @@
  * Method:    valid
  * Signature: (Ljava/nio/ByteBuffer;)Z
  */
-JNIEXPORT jboolean JNICALL Java_HWSL2_valid
+JNIEXPORT jboolean JNICALL Java_hwsl2_HWSL2_valid
   (JNIEnv *env, jclass c, jobject a) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
   return sl2_valid(*bufa);
@@ -17,7 +17,7 @@ JNIEXPORT jboolean JNICALL Java_HWSL2_valid
  * Method:    eq
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)Z
  */
-JNIEXPORT jboolean JNICALL Java_HWSL2_eq
+JNIEXPORT jboolean JNICALL Java_hwsl2_HWSL2_eq
   (JNIEnv *env, jclass c, jobject a, jobject b) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
   sl2_t* bufb = (*env)->GetDirectBufferAddress(env, b);
@@ -29,7 +29,7 @@ JNIEXPORT jboolean JNICALL Java_HWSL2_eq
  * Method:    cmp
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)I
  */
-JNIEXPORT jint JNICALL Java_HWSL2_cmp
+JNIEXPORT jint JNICALL Java_hwsl2_HWSL2_cmp
   (JNIEnv *env, jclass c, jobject a, jobject b) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
   sl2_t* bufb = (*env)->GetDirectBufferAddress(env, b);
@@ -38,10 +38,22 @@ JNIEXPORT jint JNICALL Java_HWSL2_cmp
 
 /*
  * Class:     HWSL2
+ * Method:    copy
+ * Signature: (Ljava/nio/ByteBuffer;)V
+ */
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_copy
+  (JNIEnv *env, jclass c, jobject a, jobject b) {
+  sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
+  sl2_t* bufb = (*env)->GetDirectBufferAddress(env, b);
+  return sl2_copy(*bufa, *bufb);
+}
+
+/*
+ * Class:     HWSL2
  * Method:    unit
  * Signature: (Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_unit
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_unit
   (JNIEnv *env, jclass c, jobject a) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
   return sl2_unit(*bufa);
@@ -52,11 +64,12 @@ JNIEXPORT void JNICALL Java_HWSL2_unit
  * Method:    mulBufRight
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_mulBufRight
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_mulBufRight
   (JNIEnv *env, jclass c, jobject a, jobject b, jlong n) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
-  unsigned char* bufb = (*env)->GetDirectBufferAddress(env, b);
-  return sl2_mul_buf_right(*bufa, bufb, n);
+  jbyte* bufb = (*env)->GetByteArrayElements(env, b, NULL);
+  sl2_mul_buf_right(*bufa, (unsigned char*)bufb, n);
+  (*env)->ReleaseByteArrayElements(env, b, (jbyte*)bufb, JNI_ABORT);
 }
 
 /*
@@ -64,11 +77,12 @@ JNIEXPORT void JNICALL Java_HWSL2_mulBufRight
  * Method:    mulBufLeft
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_mulBufLeft
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_mulBufLeft
   (JNIEnv *env, jclass c, jobject a, jobject b, jlong n) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
-  unsigned char* bufb = (*env)->GetDirectBufferAddress(env, b);
-  return sl2_mul_buf_left(*bufa, bufb, n);
+  jbyte* bufb = (*env)->GetByteArrayElements(env, b, NULL);
+  sl2_mul_buf_left(*bufa, (unsigned char*)bufb, n);
+  (*env)->ReleaseByteArrayElements(env, b, (jbyte*)bufb, JNI_ABORT);
 }
 
 /*
@@ -76,7 +90,7 @@ JNIEXPORT void JNICALL Java_HWSL2_mulBufLeft
  * Method:    mul
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_mul
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_mul
   (JNIEnv *env, jclass c, jobject z, jobject a, jobject b) {
   sl2_t* bufz = (*env)->GetDirectBufferAddress(env, z);
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
@@ -89,11 +103,12 @@ JNIEXPORT void JNICALL Java_HWSL2_mul
  * Method:    serialize
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_serialize
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_serialize
   (JNIEnv *env, jclass c, jobject a, jobject b) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
-  unsigned char* bufb = (*env)->GetDirectBufferAddress(env, b);
-  return sl2_serialize(*bufa, bufb);
+  jbyte* bufb = (*env)->GetByteArrayElements(env, b, NULL);
+  sl2_serialize(*bufa, (unsigned char*)bufb);
+  (*env)->ReleaseByteArrayElements(env, b, (jbyte*)bufb, 0);
 }
 
 /*
@@ -101,9 +116,10 @@ JNIEXPORT void JNICALL Java_HWSL2_serialize
  * Method:    unserialize
  * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)V
  */
-JNIEXPORT void JNICALL Java_HWSL2_unserialize
+JNIEXPORT void JNICALL Java_hwsl2_HWSL2_unserialize
   (JNIEnv *env, jclass c, jobject a, jobject b) {
   sl2_t* bufa = (*env)->GetDirectBufferAddress(env, a);
-  unsigned char* bufb = (*env)->GetDirectBufferAddress(env, b);
-  return sl2_unserialize(*bufa, bufb);
+  jbyte* bufb = (*env)->GetByteArrayElements(env, b, NULL);
+  sl2_unserialize(*bufa, (unsigned char*)bufb);
+  (*env)->ReleaseByteArrayElements(env, b, (jbyte*)bufb, JNI_ABORT);
 }

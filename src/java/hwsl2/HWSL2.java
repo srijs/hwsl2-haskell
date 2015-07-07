@@ -1,3 +1,5 @@
+package hwsl2;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.*;
 
@@ -9,12 +11,13 @@ public class HWSL2 {
   private static native boolean valid(ByteBuffer a);
   private static native boolean eq(ByteBuffer a, ByteBuffer b);
   private static native int cmp(ByteBuffer a, ByteBuffer b);
+  private static native void copy(ByteBuffer a, ByteBuffer b);
   private static native void unit(ByteBuffer a);
-  private static native void mulBufRight(ByteBuffer a, ByteBuffer buf, long n);
-  private static native void mulBufLeft(ByteBuffer a, ByteBuffer buf, long n);
+  private static native void mulBufRight(ByteBuffer a, byte[] buf, long n);
+  private static native void mulBufLeft(ByteBuffer a, byte[] buf, long n);
   private static native void mul(ByteBuffer z, ByteBuffer a, ByteBuffer b);
-  private static native void serialize(ByteBuffer a, ByteBuffer buf);
-  private static native void unserialize(ByteBuffer a, ByteBuffer buf);
+  private static native void serialize(ByteBuffer a, byte[] buf);
+  private static native void unserialize(ByteBuffer a, byte[] buf);
 
   private ByteBuffer buf;
 
@@ -24,6 +27,10 @@ public class HWSL2 {
 
   public void reset() {
     unit(buf);
+  }
+
+  public void copy(HWSL2 b) {
+    copy(b.buf, buf);
   }
 
   public boolean valid() {
@@ -38,11 +45,11 @@ public class HWSL2 {
     return cmp(buf, b.buf);
   }
 
-  public void append(ByteBuffer b, long n) {
+  public void append(byte[] b, long n) {
     mulBufRight(buf, b, n);
   }
 
-  public void prepend(ByteBuffer b, long n) {
+  public void prepend(byte[] b, long n) {
     mulBufLeft(buf, b, n);
   }
 
@@ -54,17 +61,13 @@ public class HWSL2 {
 
   public String serialize() {
     byte[] bytes = new byte[86];
-    ByteBuffer strbuf = ByteBuffer.allocateDirect(86);
-    serialize(buf, strbuf);
-    strbuf.get(bytes);
+    serialize(buf, bytes);
     return new String(bytes, StandardCharsets.US_ASCII);
   }
 
   public void unserialize(String str) {
     byte[] bytes = str.getBytes(StandardCharsets.US_ASCII);
-    ByteBuffer strbuf = ByteBuffer.allocateDirect(86);
-    strbuf.put(bytes);
-    unserialize(buf, strbuf);
+    unserialize(buf, bytes);
   }
 
 }
