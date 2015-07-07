@@ -4,7 +4,7 @@ import java.nio.charset.*;
 public class HWSL2 {
 
   static {
-    System.load("/Users/sreis/Repositories/hwsl2/src/java/hwsl2.so");
+    System.loadLibrary("hwsl2");
   }
   private static native boolean valid(ByteBuffer a);
   private static native boolean eq(ByteBuffer a, ByteBuffer b);
