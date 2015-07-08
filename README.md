@@ -16,3 +16,5 @@ Following that, the hash function is also parallelisable. If a message `m` can b
     mconcat (parMap rpar hash cs) == hash m
 
 All operations in this package are implemented in a very efficient manner using SSE instructions.
+
+![diagram](https://raw.githubusercontent.com/srijs/hwsl2-core/master/cat.png)
