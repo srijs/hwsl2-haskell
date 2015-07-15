@@ -4,13 +4,13 @@
 -- The name of the package.
 name:                hwsl2
 
--- The package version.  See the Haskell package versioning policy (PVP) 
+-- The package version.  See the Haskell package versioning policy (PVP)
 -- for standards guiding when and how versions should be incremented.
 -- http://www.haskell.org/haskellwiki/Package_versioning_policy
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.3.0.1
+version:             0.3.1.0
 
 -- A short (one-line) description of the package.
 synopsis:            Hashing with SL2
@@ -47,18 +47,18 @@ license-file:        LICENSE
 -- The package author(s).
 author:              Sam Rijs
 
--- An email address to which users can send suggestions, bug reports, and 
+-- An email address to which users can send suggestions, bug reports, and
 -- patches.
 maintainer:          srijs@airpost.net
 
 -- A copyright notice.
--- copyright:           
+-- copyright:
 
 category:            Data
 
 build-type:          Simple
 
--- Extra files to be distributed with the package, such as examples or a 
+-- Extra files to be distributed with the package, such as examples or a
 -- README.
 extra-source-files:  README.md
                      src/core/sl2-inl.h src/core/gf2p127-inl.h
@@ -75,17 +75,17 @@ library
   exposed-modules:     Data.Hash.SL2
                        Data.Hash.SL2.Mutable
                        Data.Hash.SL2.Unsafe
-  
+
   -- Modules included in this library but not exported.
   other-modules:       Data.Hash.SL2.Internal
-  
+
   -- LANGUAGE extensions used by modules in this package.
   other-extensions:    ForeignFunctionInterface CApiFFI
                        Safe Trustworthy Unsafe
-  
+
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.7 && <4.8, bytestring >=0.10 && <0.11
-  
+
   -- Directories containing source files.
   hs-source-dirs:      src
 
@@ -99,7 +99,7 @@ library
   else
     cc-options:        -Wall -O3 -msse4.1 -msse2 -mpclmul
     ghc-options:       -O3 -optc-msse4.1 -msse2 -optc-mpclmul
-  
+
   -- Base language which the package is written in.
   default-language:    Haskell2010
 
