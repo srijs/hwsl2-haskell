@@ -68,7 +68,7 @@ cabal-version:       >=1.10
 
 flag avx2
   description:        Enable AVX 2 optimisations.
-  default:            True
+  default:            False
 
 library
   -- Modules exported by the library.
