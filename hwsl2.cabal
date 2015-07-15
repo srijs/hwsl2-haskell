@@ -73,6 +73,7 @@ flag avx2
 library
   -- Modules exported by the library.
   exposed-modules:     Data.Hash.SL2
+                       Data.Hash.SL2.Chunk
                        Data.Hash.SL2.Mutable
                        Data.Hash.SL2.Unsafe
 
