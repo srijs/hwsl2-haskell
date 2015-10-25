@@ -1,4 +1,4 @@
-# Hashing with SL2
+# Hashing with SL2 [![Build Status](https://travis-ci.org/srijs/hwsl2-haskell.svg?branch=master)](https://travis-ci.org/srijs/hwsl2-haskell)
 
 An algebraic hash function, inspired by the paper _Hashing with SL2_ by Tillich and Zemor.
 
