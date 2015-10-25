@@ -1,4 +1,26 @@
-language: haskell
-ghc: 7.10
+language: c
+sudo: false
+
+before_install:
+  # stack
+  - mkdir -p ~/.local/bin
+  - export PATH=~/.local/bin:$PATH
+  - curl -L https://github.com/commercialhaskell/stack/releases/download/v0.1.4.0/stack-0.1.4.0-x86_64-linux.tar.gz | tar xz -C ~/.local/bin
+  - ulimit -n 2048
+
+matrix:
+  include:
+    - env: GHCVER=7.10.2 STACK_YAML=stack-7.10.yaml
+      addons: {apt: {packages: [ghc-7.10.2],sources: [hvr-ghc]}}
+    - env: GHCVER=head STACK_YAML=stack-head.yaml
+      addons: {apt: {packages: [cabal-install-head,ghc-head],  sources: [hvr-ghc]}}
+
+  allow_failures:
+   - env: GHCVER=head STACK_YAML=stack-head
+
+install:
+  - stack --no-terminal --skip-ghc-check setup
+  - stack --no-terminal --skip-ghc-check test --only-snapshot
+
 script:
-  - cabal configure --enable-tests -f-avx2 && cabal build && cabal test
+  - stack --no-terminal --skip-ghc-check test
