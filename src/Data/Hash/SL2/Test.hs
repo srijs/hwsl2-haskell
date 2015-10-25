@@ -1,7 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Data.Hash.SL2.Test where
-
 import Prelude hiding (concat)
 
 import Data.Word
@@ -14,11 +12,9 @@ import qualified Data.ByteString as B
 
 import Foreign
 
-import Test.QuickCheck
-import Test.QuickCheck.All
+import Test.Tasty
+import Test.Tasty.QuickCheck as QC
 import Test.QuickCheck.Property.Monoid
-
-import Distribution.TestSuite.QuickCheck
 
 import Data.Monoid
 
@@ -28,8 +24,10 @@ instance Arbitrary B.ByteString where
 instance Arbitrary Hash where
   arbitrary = fmap hash arbitrary
 
-tests :: IO [Test]
-tests = return
+main = defaultMain tests
+
+tests :: TestTree
+tests = testGroup "Properties"
 
   [ testGroup "equality"
 

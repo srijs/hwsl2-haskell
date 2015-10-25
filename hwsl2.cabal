@@ -106,19 +106,18 @@ library
 
 
 test-suite test
-  type:                detailed-0.9
+  type:                exitcode-stdio-1.0
   hs-source-dirs:      src
-  test-module:         Data.Hash.SL2.Test
+  main-is:             Data/Hash/SL2/Test.hs
   other-modules:       Data.Hash.SL2
                        Data.Hash.SL2.Mutable
                        Data.Hash.SL2.Unsafe
                        Data.Hash.SL2.Internal
   build-depends:       base >=4.8 && <4.9,
-                       Cabal >=1.9.2,
                        bytestring >=0.10,
-                       QuickCheck >=2.7,
-                       quickcheck-properties >= 0.1,
-                       cabal-test-quickcheck >= 0.1
+                       tasty >=0.10,
+                       tasty-quickcheck >=0.8,
+                       quickcheck-properties >= 0.1
   include-dirs:        src/core
   if flag(avx2)
     cc-options:        -Wall -O3 -mavx2 -msse4.1 -msse2 -mpclmul

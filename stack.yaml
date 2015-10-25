@@ -1,0 +1,8 @@
+flags:
+  hwsl2:
+    avx2: false
+packages:
+- '.'
+extra-deps:
+  - quickcheck-properties-0.1
+resolver: lts-3.11
