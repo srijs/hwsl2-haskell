@@ -16,6 +16,6 @@ bs4M = B.pack $ take (4 * 1024 * 1024) $ cycle [0..255]
 main = defaultMain
   [ bench "hwsl2 append" $ whnf (append unit) bs4M
   , bench "hwsl2 prepend" $ whnf (flip prepend unit) bs4M
-  , bench "hwsl2 append parallel" $ whnf (concatAll . (parMap rpar hash)) [bs1M, bs1M, bs1M, bs1M]
+  , bench "hwsl2 append parallel" $ whnf (concatAll . parMap rpar hash) [bs1M, bs1M, bs1M, bs1M]
   , bench "sha256" $ whnf SHA256.hash bs4M
   ]

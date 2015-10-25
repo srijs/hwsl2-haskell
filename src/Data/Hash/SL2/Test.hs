@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Data.Hash.SL2.Test where
 
 import Prelude hiding (concat)
@@ -10,7 +12,7 @@ import Data.Hash.SL2.Unsafe
 
 import qualified Data.ByteString as B
 
-import Foreign.Safe
+import Foreign
 
 import Test.QuickCheck
 import Test.QuickCheck.All
@@ -104,7 +106,7 @@ tests = return
     , testGroup "multiple strings" $
 
       [ testProperty "equal to (foldl append)" $
-          \a b -> (foldl append) a b == a `foldAppend` b
+          \a (b :: [B.ByteString]) -> foldl append a b == a `foldAppend` b
       ]
 
     ]
@@ -120,7 +122,7 @@ tests = return
     , testGroup "multiple strings" $
 
       [ testProperty "equal to (flip (foldr prepend)" $
-          \a b -> (flip (foldr prepend)) a b == a `foldPrepend` b
+          \(a :: [B.ByteString]) b -> foldr prepend b a == a `foldPrepend` b
       ]
 
     ]

@@ -13,13 +13,13 @@ module Data.Hash.SL2.Mutable
 
 import Prelude hiding (concat)
 
-import Foreign.Safe
+import Foreign
 import Foreign.C.String
 
 import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe
 
-import Data.Foldable (Foldable, foldlM, foldrM)
+import Data.Foldable (foldlM, foldrM)
 
 import Data.Hash.SL2.Internal (Hash, hashLen)
 import qualified Data.Hash.SL2.Internal as Internal

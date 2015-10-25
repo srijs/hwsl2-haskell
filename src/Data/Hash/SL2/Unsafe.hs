@@ -2,7 +2,7 @@
 
 module Data.Hash.SL2.Unsafe (unsafeUseAsPtr, unsafeUseAsPtr2, unsafeWithNew, unsafePack, unsafeUnpack) where
 
-import Foreign.Safe
+import Foreign
 import System.IO.Unsafe
 
 import Data.Hash.SL2.Internal (Hash(H), hashSize)

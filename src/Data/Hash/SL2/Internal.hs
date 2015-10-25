@@ -4,7 +4,7 @@
 
 module Data.Hash.SL2.Internal where
 
-import Foreign.Safe
+import Foreign
 import Foreign.C.Types
 
 newtype Hash = H (ForeignPtr ())
