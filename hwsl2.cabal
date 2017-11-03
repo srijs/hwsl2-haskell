@@ -131,6 +131,7 @@ test-suite test
   else
     cc-options:        -Wall -msse4.1 -msse2 -mpclmul
     ghc-options:       -optc-msse4.1 -msse2 -optc-mpclmul
+  default-language:    Haskell2010
 
 benchmark bench
   type:                exitcode-stdio-1.0
@@ -153,3 +154,4 @@ benchmark bench
   else
     cc-options:        -Wall -msse4.1 -msse2 -mpclmul
     ghc-options:       -rtsopts -threaded -optc-msse4.1 -msse2 -optc-mpclmul
+  default-language:    Haskell2010
