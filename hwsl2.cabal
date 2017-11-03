@@ -38,6 +38,7 @@ description:
 -- URL for the project homepage or repository.
 homepage:            https://github.com/srijs/hwsl2
 
+
 -- The license under which the package is released.
 license:             MIT
 
@@ -66,9 +67,14 @@ extra-source-files:  README.md
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
+
+source-repository head
+  type:                git
+  location:            git://github.com/srijs/hwsl2-haskell.git
+
 flag avx2
-  description:        Enable AVX 2 optimisations.
-  default:            False
+  description:         Enable AVX 2 optimisations.
+  default:             False
 
 library
   -- Modules exported by the library.
