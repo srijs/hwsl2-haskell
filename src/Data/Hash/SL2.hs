@@ -45,6 +45,8 @@ module Data.Hash.SL2
 
 import Prelude hiding (concat)
 
+import Data.Semigroup (Semigroup, (<>))
+
 import Data.Hash.SL2.Internal (Hash)
 import Data.Hash.SL2.Unsafe
 import qualified Data.Hash.SL2.Mutable as Mutable
@@ -65,9 +67,12 @@ instance Eq Hash where
 instance Ord Hash where
   compare a b = unsafePerformIO $ unsafeUseAsPtr2 a b Mutable.cmp
 
+instance Semigroup Hash where
+  (<>) = concat
+
 instance Monoid Hash where
   mempty = unit
-  mappend = concat
+  mappend = (<>)
   mconcat = concatAll
 
 -- | /O(n)/ Calculate the hash of the 'ByteString'. Alias for @('append' 'unit')@.
