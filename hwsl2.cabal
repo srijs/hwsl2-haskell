@@ -92,6 +92,8 @@ library
 
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.8 && <5, bytestring >=0.10
+  if !impl(ghc >= 8.0)
+    build-depends: semigroups == 0.18.*
 
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -124,6 +126,8 @@ test-suite test
                        tasty >=0.10,
                        tasty-quickcheck >=0.8,
                        quickcheck-properties >= 0.1
+  if !impl(ghc >= 8.0)
+    build-depends: semigroups == 0.18.*
   include-dirs:        src/core
   if flag(avx2)
     cc-options:        -Wall -mavx2 -msse4.1 -msse2 -mpclmul
@@ -147,6 +151,8 @@ benchmark bench
                        criterion >=1.0,
                        cryptohash >=0.11,
                        parallel >=3.2
+  if !impl(ghc >= 8.0)
+    build-depends: semigroups == 0.18.*
   include-dirs:        src/core
   if flag(avx2)
     cc-options:        -Wall -mavx2 -msse4.1 -msse2 -mpclmul
